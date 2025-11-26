@@ -50,7 +50,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
         onClick={onClose}
         aria-hidden="true"
       />
-        <div className="relative min-h-[calc(100vh-8rem)] overflow-y-auto">
+        <div className="relative  overflow-y-auto">
           {children}
         </div>
     </div>

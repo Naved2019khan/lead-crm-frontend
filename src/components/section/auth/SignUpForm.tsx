@@ -1,44 +1,28 @@
 "use client"
-
+import { Alert } from "@/components/popup/Alert";
+import { signUpNetworkCall } from "@/utils/api/auth";
+import { signUpFormValidator } from "@/utils/validator/signUpFormValidator";
 import { useState } from "react";
 
-export const SignUpForm = ({ onSuccess, onSwitchToSignIn }) => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+export const SignUpForm = ({formData, onChange ,onSuccess, onSwitchToSignIn }) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState({});
 
   const handleSubmit = async () => {
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('Please fill in all fields');
+    const errors = signUpFormValidator(formData);
+    setError(errors);
+    if (errors) {
       return;
     }
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
 
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: formData.name, email: formData.email })
-      });
+      const response = await signUpNetworkCall({payload: formData});
 
-      if (!response.ok) throw new Error('Sign up failed');
-
-      const data = await response.json();
-      setTimeout(() => onSuccess({ email: formData.email, name: formData.name, id: data.id }), 500);
+      setTimeout(() => onSuccess({ email: formData.email, name: formData.name, id: response.id }), 500);
+      
     } catch (err) {
-      setError('Sign up failed. Please try again.');
+      setError({ general: 'Sign up failed. Please try again.' });
+      // setError('Sign up failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -75,9 +59,10 @@ export const SignUpForm = ({ onSuccess, onSwitchToSignIn }) => {
                 required
                 autoComplete="name"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={onChange}
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
               />
+              {error.name && <Alert type="error" message={error.name} />}
             </div>
           </div>
 
@@ -93,9 +78,10 @@ export const SignUpForm = ({ onSuccess, onSwitchToSignIn }) => {
                 required
                 autoComplete="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={onChange}
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
               />
+              {error.email && <Alert type="error" message={error.email} />}
             </div>
           </div>
 
@@ -111,9 +97,10 @@ export const SignUpForm = ({ onSuccess, onSwitchToSignIn }) => {
                 required
                 autoComplete="new-password"
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={onChange}
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
               />
+              {error.password && <Alert type="error" message={error.password} />}
             </div>
           </div>
 
@@ -129,17 +116,12 @@ export const SignUpForm = ({ onSuccess, onSwitchToSignIn }) => {
                 required
                 autoComplete="new-password"
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    onChange={onChange}
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
               />
+              {error.confirmPassword && <Alert type="error" message={error.confirmPassword} />}
             </div>
           </div>
-
-          {error && (
-            <div className="text-red-400 text-sm text-center">
-              {error}
-            </div>
-          )}
 
           <div>
             <button
@@ -149,6 +131,7 @@ export const SignUpForm = ({ onSuccess, onSwitchToSignIn }) => {
             >
               {loading ? 'Creating account...' : 'Sign up'}
             </button>
+            {error.general && <Alert type="error" message={error.general} />}
           </div>
         </div>
 
