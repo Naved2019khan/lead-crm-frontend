@@ -21,32 +21,14 @@ interface Lead {
   notes: string;
 }
 
-const LeadListing = ({leads}) => {
+const LeadListing = ({leads} : { leads: Lead[] }) => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  // const [leads, setLead] = useState<Lead[]>([]);
-  // const [isLoading, setIsLoading] = useState(false);
-
   const handleCloseModal = () => {
     // fetchLeads();
     updateSiteAction()
     setSelectedLead(null);
   };
 
-  // async function fetchLeads() {
-  //   setIsLoading(true);
-  //   try {
-  //     const leads = await getAllLeads();
-  //     setLead(leads?.leads);
-  //   } catch (error) {
-  //     console.error("Error fetching leads:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   fetchLeads();
-  // }, []);
 
   const getStatusColor = (status: Lead["status"]) => {
     const colors = {
