@@ -15,7 +15,7 @@ export const Sidebar = () => {
   const navigation: NavItem[] = [
     { name: "Dashboard", icon: <Home className="w-5 h-5" />, href: "/dashboard" },
     { name: "All leads", icon: <BarChart3 className="w-5 h-5" />, href: "/dashboard/leads" },
-    { name: "Test", icon: <BarChart3 className="w-5 h-5" />, href: "dashboard/test" },
+    { name: "Test", icon: <BarChart3 className="w-5 h-5" />, href: "/dashboard/test" },
     { name: "Leads Site", icon: <BarChart3 className="w-5 h-5" />, href: "/dashboard/all-agency-sites" },
     { name: "Software Site", icon: <BarChart3 className="w-5 h-5" />, href: "/dashboard/all-flight-sites" },
     { name: "Users", icon: <Users className="w-5 h-5" />, href: "/dashboard/user-listing" },

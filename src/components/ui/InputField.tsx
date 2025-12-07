@@ -23,7 +23,7 @@ export const InputField = ({ name, label, icon: Icon, type = "text", value, onCh
       {...props}
     />
     <AlertMessage>
-      {error && <p className=" text-xs text-red-500">{error}</p>}
+      {error}
     </AlertMessage>
     {/* {error && <p className="mt-1 text-xs text-red-500">{error}</p>} */}
   </div>

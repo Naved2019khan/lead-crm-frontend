@@ -1,6 +1,6 @@
 "use client";
 
-import { DOMAIN_NAME } from "@/libs/constants";
+import { DOMAIN_NAME } from "@/lib/constants";
 import { setOpenModal } from "@/redux/slice/auth-slice";
 import Link from "next/link";
 import { useDispatch } from "react-redux";

@@ -5,10 +5,10 @@ import { User , Calendar, X, XCircle } from "lucide-react";
 
 export const PassengerCard = ({ passenger, index, onRemove, onPassengerChange, errors }) => {
   const paxErrors = {
-    firstName: errors[`passenger-${index}-firstName`],
-    lastName: errors[`passenger-${index}-lastName`],
-    dob: errors[`passenger-${index}-dob`],
-    gender: errors[`passenger-${index}-gender`],
+    firstName: errors?.[`passenger-${index}-firstName`] || "",
+    lastName: errors?.[`passenger-${index}-lastName`] || "",
+    dob: errors?.[`passenger-${index}-dob`] || "",
+    gender: errors?.[`passenger-${index}-gender`] || "",
   };
 
   const handleInputChange = (e) => {
@@ -16,24 +16,27 @@ export const PassengerCard = ({ passenger, index, onRemove, onPassengerChange, e
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-3 p-4 rounded-lg border border-[#edf2f7] bg-[#fafcff]">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-3 p-4 rounded-lg border border-[#edf2f7]">
       <InputField
+        className="bg-white"
         name="firstName"
         label="First Name"
         icon={User}
         value={passenger.firstName}
         onChange={handleInputChange}
-        error={paxErrors.firstName}
+        error={paxErrors?.firstName}
       />
       <InputField
+        className="bg-white"
         name="lastName"
         label="Last Name"
         icon={User}
         value={passenger.lastName}
         onChange={handleInputChange}
-        error={paxErrors.lastName}
+        error={paxErrors?.lastName}
       />
       <InputField
+        className="bg-white"
         name="dob"
         label="Date of Birth"
         icon={Calendar}
@@ -41,7 +44,7 @@ export const PassengerCard = ({ passenger, index, onRemove, onPassengerChange, e
         value={passenger.dob}
         onChange={handleInputChange}
         max={new Date().toISOString().split("T")[0]}
-        error={paxErrors.dob}
+        error={paxErrors?.dob}
       />
       <div>
         <div className="relative">
@@ -63,7 +66,7 @@ export const PassengerCard = ({ passenger, index, onRemove, onPassengerChange, e
           <button
             type="button"
             onClick={() => onRemove(index)}
-            className="mt-2 border w-fit items-center flex gap-2 text-sm text-red-600  rounded p-3 hover:text-red-700 font-medium"
+            className="mt-2 bg-red-600  border w-fit items-center justify-center flex gap-1 text-sm text-white  rounded-lg p-1  font-medium"
           >
             <span><XCircle className="w-4 h-4" /></span>
             Remove Pax {index + 1}

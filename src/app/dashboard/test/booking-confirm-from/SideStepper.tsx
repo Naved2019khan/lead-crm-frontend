@@ -2,7 +2,9 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle, Circle, CircleDot } from 'lucide-react';
+import { CheckCircle, Circle, CircleDot, Edit2, Edit3 } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleEdit } from '@/redux/slice/stepper-slice';
 
 interface Step {
   id: number;
@@ -29,11 +31,15 @@ const steps: Step[] = [
 ];
 
 interface StepperProps {
-  currentStep: number;
+  stepCount: number;
   completedSteps: number[];
 }
 
-export default function SideStepper({ currentStep = 1, completedSteps  }: StepperProps) {
+export default function SideStepper({ }: StepperProps) {
+  const { stepCount } = useSelector((state: any) => state.stepperSlice);
+  const dispatch = useDispatch();
+
+
   return (
     <div className="bg-[#FFF5F0] p-6 rounded-lg h-full md:80">
       {/* Logo */}
@@ -52,23 +58,22 @@ export default function SideStepper({ currentStep = 1, completedSteps  }: Steppe
       {/* Stepper */}
       <div className="space-y-6">
         {steps.map((step, index) => {
-          const isCurrent = step.id === currentStep;
-          const isCompleted = completedSteps?.includes(step.id);
+          const isCurrent = step.id === stepCount + 1;
+          const isCompleted = stepCount >= step.id;
           const isLast = index === steps.length - 1;
-          
+
           return (
-            <div key={step.id} className="relative">
+            <div key={step.id} className="relative mb-0">
               <div className="flex items-start gap-4">
                 {/* Step indicator */}
                 <div className="flex flex-col items-center">
-                  <div 
-                    className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${
-                      isCompleted 
-                        ? 'bg-orange-500 border-orange-500 text-white' 
-                        : isCurrent 
-                          ? 'bg-white border-orange-500 text-orange-500' 
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${isCompleted
+                        ? 'bg-orange-500 border-orange-500 text-white'
+                        : isCurrent
+                          ? 'bg-white border-orange-500 text-orange-500'
                           : 'bg-white border-gray-300 text-gray-500'
-                    }`}
+                      }`}
                   >
                     {isCompleted ? (
                       <CheckCircle className="w-4 h-4" />
@@ -76,40 +81,43 @@ export default function SideStepper({ currentStep = 1, completedSteps  }: Steppe
                       <span className="text-sm font-medium">{step.id}</span>
                     )}
                   </div>
-                  
+
                   {/* Vertical line */}
                   {!isLast && (
-                    <div 
-                      className={`w-0.5 h-12 mx-auto ${
-                        isCompleted || (completedSteps?.includes(step.id + 1)) 
-                          ? 'bg-orange-500' 
+                    <div
+                      className={`w-0.5 h-18 mx-auto ${isCompleted
+                          ? 'bg-orange-500'
                           : 'bg-gray-300'
-                      }`}
+                        }`}
                     />
                   )}
                 </div>
-                
+
+
                 {/* Step content */}
                 <div className="flex-1">
-                  <h3 className={`font-medium ${
-                    isCompleted 
-                      ? 'text-gray-800' 
-                      : isCurrent 
-                        ? 'text-orange-500' 
+                  <h3 className={`font-medium ${isCompleted
+                      ? 'text-gray-800'
+                      : isCurrent
+                        ? 'text-orange-500'
                         : 'text-gray-600'
-                  }`}>
+                    }`}>
                     {step.title}
                   </h3>
-                  <p className={`text-xs mt-1 ${
-                    isCompleted 
-                      ? 'text-gray-600' 
-                      : isCurrent 
-                        ? 'text-orange-500' 
+                  <p className={`text-xs mt-1 ${isCompleted
+                      ? 'text-gray-600'
+                      : isCurrent
+                        ? 'text-orange-500'
                         : 'text-gray-400'
-                  }`}>
+                    }`}>
                     {step.subtitle}
                   </p>
+
                 </div>
+
+                {isCompleted && <button onClick={() => dispatch(handleEdit(step.id - 1))} className='flex items-center gap-1 px-1 mt-2 text-white font-semibold text-xs bg-orange-600 rounded'>
+                  <Edit2 className='size-3 font-medium' /> Edit
+                </button>}
               </div>
             </div>
           );

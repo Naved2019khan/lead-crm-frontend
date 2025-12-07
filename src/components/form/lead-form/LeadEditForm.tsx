@@ -8,7 +8,7 @@ import {
   DollarSign,
   TrendingUp,
 } from "lucide-react";
-import { dateForPicker } from "@/libs/date";
+import { dateForPicker } from "@/lib/date";
 import { updateLead } from "@/services/api/agency-api";
 import SuccessCard from "@/components/card/SuccessCard";
 

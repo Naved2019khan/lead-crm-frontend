@@ -1,1 +1,1 @@
-export { GET, POST } from "@/libs/auth";
+export { GET, POST } from "@/lib/auth";

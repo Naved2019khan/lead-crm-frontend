@@ -1,41 +1,28 @@
 "use client"
-import { useState } from 'react';
-import FromOne from './FromOne'
+import { useSelector } from 'react-redux';
 import SideStepper from './SideStepper'
+import StepOne from '@/components/form/flight-booking-form/step-one';
+import StepTwo from '@/components/form/flight-booking-form/step-two';
+import StepThree from '@/components/form/flight-booking-form/step-three';
+
 
 
 const BookingConfirmFrom = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [showWelcome, setShowWelcome] = useState(false);
-
-  
-  const handleNext = () => {
-    if (currentStep < 3) {
-      // Mark current step as completed
-      if (!completedSteps.includes(currentStep)) {
-        setCompletedSteps([...completedSteps, currentStep]);
-      }
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleSubmit = () => {
-    // In a real app, you would submit the form data here
-    console.log('Form submitted!');
-    setShowWelcome(true);
-  };
+  const { stepCount ,completedSteps } = useSelector((state: any) => state.stepperSlice);
+  const renderStep = [<StepOne />, <StepTwo />, <StepThree />]
 
   return (
-    <div className='flex justify-center gap-4 py-4 mt-6 '>
+    <div className='flex justify-center gap-4 py-4 mt-6  '>
       <SideStepper />
-       <FromOne />
+      {
+        renderStep?.map((element,index)=>{
+          return (
+            <div key={index} className={`${index != stepCount && "hidden"}  w-full max-w-3xl`}>
+              {element}
+            </div>
+          )
+        })
+      }
     </div>
   )
 }

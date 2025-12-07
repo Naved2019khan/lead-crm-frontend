@@ -20,7 +20,7 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
   variant = 'error',
   className = '',
 }) => {
-  const base = "w-fit px-4 py-2 rounded-lg font-medium text-xs mt-1 border-l-4";
+  const base = "w-fit px-4 py-1 rounded-lg font-medium text-xs mt-1 border-l-4";
 
   if (!children) return null;
 
