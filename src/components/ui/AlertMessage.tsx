@@ -1,4 +1,3 @@
-// components/ui/AlertMessage.tsx
 import React from 'react';
 
 export type AlertVariant = 'error' | 'warning' | 'success' | 'info';
@@ -10,10 +9,10 @@ interface AlertMessageProps {
 }
 
 const variantStyles: Record<AlertVariant, string> = {
-  error: 'text-red-600 dark:text-red-400',
-  warning: 'text-yellow-600 dark:text-yellow-400',
-  success: 'text-green-600 dark:text-green-400',
-  info: 'text-blue-600 dark:text-blue-400',
+ error: "bg-red-50 text-red-500 border-red-600",
+  success: "bg-green-50 text-green-700 border-green-600",
+  warning: "bg-yellow-50 text-yellow-700 border-yellow-600",
+  info: "bg-blue-50 text-blue-700 border-blue-600",
 };
 
 export const AlertMessage: React.FC<AlertMessageProps> = ({
@@ -21,11 +20,13 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
   variant = 'error',
   className = '',
 }) => {
+  const base = "w-fit px-4 py-1 rounded-lg font-medium text-xs mt-1 border-l-4";
+
   if (!children) return null;
 
   return (
     <p
-      className={`absolute bg-red-100 p-2 rounded-lg  mt-1 text-sm font-medium ${variantStyles[variant]} ${className}`}
+      className={`absolute ${base} ${variantStyles[variant]} ${className}`}
       role="alert"
       aria-live="polite"
     >

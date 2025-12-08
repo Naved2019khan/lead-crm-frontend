@@ -1,39 +1,30 @@
-/**
- * A reusable, Tailwind-styled input field component.
- * @param {string} name - The HTML 'name' attribute for the input.
- * @param {string} label - The visible label for the input.
- * @param {string} [type='text'] - The HTML input type (e.g., 'text', 'number', 'date', 'email').
- * @param {boolean} [disabled=false] - If the input should be disabled.
- * @param {function} onChange - The handler function for the input change event.
- * @param {string | number} value - The current value of the input.
- * @param {object} [props={}] - Any additional props (like min, max for number/date).
- */
-const InputField = ({ 
-  name, 
-  label, 
-  type = "text", 
-  disabled = false, 
-  onChange, 
-  value, 
-  ...props 
-}) => {
-  return (
-    <div className="flex-1 min-w-0">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-gray-100"
-        {...props}
-      />
-    </div>
-  );
-};
+import { AlertMessage } from "./AlertMessage";
 
-export default InputField;
+// --- InputField Component (Paper-style) ---
+export const InputField = ({ name, label, icon: Icon, type = "text", value, onChange, error, disabled, className = "", ...props }) => (
+  <div className="relative flex-1 min-w-0">
+    <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600 mb-1.5">
+      {Icon && <Icon className="w-3.5 h-3.5 text-[#718096]" />}
+      {label}
+    </label>
+    <input
+      name={name}
+      type={type}
+      value={value}
+      onChange={onChange}
+      disabled={disabled}
+      className={`w-full rounded-md border px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#a5b4fc] ${
+        disabled
+          ? "bg-[#f8fafc] cursor-not-allowed"
+          : error
+          ? "border-red-300"
+          : "border-[#e2e8f0] focus:border-[#818cf8]"
+      } ${className}`}
+      {...props}
+    />
+    <AlertMessage>
+      {error}
+    </AlertMessage>
+    {/* {error && <p className="mt-1 text-xs text-red-500">{error}</p>} */}
+  </div>
+);

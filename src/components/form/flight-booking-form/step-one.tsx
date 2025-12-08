@@ -1,20 +1,16 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  User,
-  Mail,
-  Hash,
-  DollarSign,
-  Calendar,
-  Plane,
-  Globe,
-  Users,
-  Tag,
-} from "lucide-react";
+import { Mail, Hash, DollarSign, Globe, Users, Tag } from "lucide-react";
 import { Dropdown } from "@/components/ui/Dropdown";
+import { PassengerCard } from "@/components/form/pax-form/PassangerForm";
+import { paxGroupValidatior } from "@/utils/validator/paxGroupValidatior";
+import { InputField } from "@/components/ui/InputField";
 import { AlertMessage } from "@/components/ui/AlertMessage";
+import { useDispatch } from "react-redux";
+import { handleNext } from "@/redux/slice/stepper-slice";
+import { Button } from "@/components/button/Button";
 
-// --- Constants ---
+// --- Constants (unchanged) ---
 const currency = [
   { currency: "USD", currencyName: "US Dollar", flag: "🇺🇸" },
   { currency: "EUR", currencyName: "Euro", flag: "🇪🇺" },
@@ -30,14 +26,7 @@ const PLATFORM = [
   { value: "FR", label: "French" },
 ];
 
-const GENDER_OPTIONS = [
-  { value: "", label: "— Select —" },
-  { value: "Male", label: "Male" },
-  { value: "Female", label: "Female" },
-];
-
 const REQUEST_TYPE = [
-  { value: "", label: "— Select Type —" },
   { value: "NEWBOOKING", label: "New Booking" },
   { value: "CHANGEBOOKING", label: "Change Booking" },
   { value: "CANCELLATION", label: "Cancellation" },
@@ -49,160 +38,21 @@ const REQUEST_TYPE = [
 const initialFormData = {
   status: "",
   platform: "",
-  passengers: [{ firstName: "", lastName: "", dob: "", gender: "" }],
-  email: "",
+  passengers: [{ firstName: "aa", lastName: "aa", dob: "", gender: "Male" }],
+  email: "nacc@dd.cc",
   gdsRefNo: "",
   ticketNumber: "",
   currency: "",
-  totalPrice: "",
-  netCost: "",
+  totalPrice: 10,
+  netCost: 1,
   mco: "0.00",
 };
 
-// --- InputField Component (Reusable) ---
-const InputField = ({ name, label, icon: Icon, type = "text", value, onChange, error, ...props }) => (
-  <div className="flex-1 min-w-0 relative">
-    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
-      {Icon && <Icon className="w-4 h-4 text-blue-600" />}
-      {label}
-    </label>
-    <input
-      name={name}
-      type={type}
-      value={value}
-      onChange={onChange}
-      className={`w-full rounded-lg border px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 ${
-        error
-          ? "border-red-400 focus:ring-red-200"
-          : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"
-      } transition`}
-      {...props}
-    />
-    <AlertMessage>
-    {error}
-    </AlertMessage>
-    {/* {error && <p className="mt-1 text-sm text-red-600">{error}</p>} */}
-  </div>
-);
-
-// --- PassengerCard: Moved OUTSIDE to prevent re-creation on every render ---
-const PassengerCard = ({ passenger, index, onRemove, onPassengerChange, errors, onGenderChange }) => {
-  const paxErrors = {
-    firstName: errors[`passenger-${index}-firstName`],
-    lastName: errors[`passenger-${index}-lastName`],
-    dob: errors[`passenger-${index}-dob`],
-  };
-
-  const handleInputChange = (e) => {
-    onPassengerChange(index, e);
-  };
-
-  return (
-    <div className="flex flex-col md:flex-row gap-4 p-4 bg-blue-50/30 rounded-xl border border-blue-100 items-end">
-  <div className="flex-1 min-w-0 flex flex-col">
-
-      <InputField
-        name="firstName"
-        label="First Name"
-        icon={User}
-        value={passenger.firstName}
-        onChange={handleInputChange}
-        error={paxErrors.firstName}
-        />
-        </div>
-  <div className="flex-1 min-w-0 flex flex-col">
-      <InputField
-        name="lastName"
-        label="Last Name"
-        icon={User}
-        value={passenger.lastName}
-        onChange={handleInputChange}
-        error={paxErrors.lastName}
-      />
-           </div>
-             <div className="flex-1 min-w-0 flex flex-col">
-      <InputField
-        name="dob"
-        label="Date of Birth"
-        icon={Calendar}
-        type="date"
-        value={passenger.dob}
-        onChange={handleInputChange}
-        max={new Date().toISOString().split("T")[0]}
-        error={paxErrors.dob}
-      />
-           </div>
-      <div className="flex-1 min-w-0 flex flex-col">
-        <Dropdown
-          options={GENDER_OPTIONS}
-          name="gender"
-          label="Gender"
-          value={passenger.gender}
-          onChange={(value) => onGenderChange(index, value)}
-        />
-      </div>
-      {index > 0 && (
-        <button
-          type="button"
-          onClick={() => onRemove(index)}
-          className="mt-6 md:mt-0 w-full md:w-auto px-4 py-2.5 bg-red-500/10 text-red-600 font-medium rounded-lg border border-red-300 hover:bg-red-500/20 transition"
-        >
-          Remove
-        </button>
-      )}
-    </div>
-  );
-};
-
-const StepOne = ({ formType = "add" }) => {
+const StepOne = ({ formType = "" }) => {
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch()
 
-  // --- Validation ---
-  const validateField = (name, value) => {
-    switch (name) {
-      case "email":
-        return value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-          ? "Invalid email format"
-          : "";
-      case "totalPrice":
-        return value && (isNaN(value) || parseFloat(value) < 0)
-          ? "Must be a valid positive number"
-          : "";
-      case "netCost":
-        return value && (isNaN(value) || parseFloat(value) < 0)
-          ? "Must be a valid positive number"
-          : "";
-      case "firstName":
-      case "lastName":
-        return !value.trim() ? "This field is required" : "";
-      case "dob":
-        if (!value) return "Date of birth is required";
-        const today = new Date();
-        const dob = new Date(value);
-        return dob > today ? "Date cannot be in the future" : "";
-      default:
-        return "";
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    formData.passengers.forEach((pax, idx) => {
-      ["firstName", "lastName", "dob"].forEach((field) => {
-        const error = validateField(field, pax[field]);
-        if (error) newErrors[`passenger-${idx}-${field}`] = error;
-      });
-    });
-    ["email", "totalPrice", "netCost"].forEach((field) => {
-      const error = validateField(field, formData[field]);
-      if (error) newErrors[field] = error;
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // --- Handlers ---
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -222,22 +72,13 @@ const StepOne = ({ formType = "add" }) => {
     }
   };
 
-  const handleGenderChange = (index, value) => {
-    setFormData((prev) => {
-      const newPassengers = [...prev.passengers];
-      newPassengers[index] = { ...newPassengers[index], gender: value };
-      return { ...prev, passengers: newPassengers };
-    });
-    const key = `passenger-${index}-gender`;
-    if (errors[key]) {
-      setErrors((prev) => ({ ...prev, [key]: "" }));
-    }
-  };
-
   const addPassenger = useCallback(() => {
     setFormData((prev) => ({
       ...prev,
-      passengers: [...prev.passengers, { firstName: "", lastName: "", dob: "", gender: "" }],
+      passengers: [
+        ...prev.passengers,
+        { firstName: "", lastName: "", dob: "", gender: "" },
+      ],
     }));
   }, []);
 
@@ -255,7 +96,7 @@ const StepOne = ({ formType = "add" }) => {
     });
   }, []);
 
-  // --- Auto-calculate MCO ---
+  // --- Auto-calculate MCO (unchanged) ---
   useEffect(() => {
     const totalPrice = parseFloat(formData.totalPrice) || 0;
     const netCost = parseFloat(formData.netCost) || 0;
@@ -265,10 +106,13 @@ const StepOne = ({ formType = "add" }) => {
     }
   }, [formData.totalPrice, formData.netCost]);
 
-  // --- Submit ---
+  // --- Submit (unchanged) ---
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    const error = paxGroupValidatior(formData);
+    setErrors(error);
+    if (!error) {
+      dispatch(handleNext())
       console.log("✅ Valid Form Data:", formData);
     } else {
       console.log("❌ Validation failed");
@@ -276,23 +120,24 @@ const StepOne = ({ formType = "add" }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-8 p-5 md:p-8 bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl max-w-6xl mx-auto"
-    >
+    <form onSubmit={handleSubmit} className="">
       {/* Header */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-600 text-white mb-4">
-          <Plane className="w-7 h-7" />
-        </div>
-        <h2 className="text-2xl font-bold text-gray-800">New Booking Request</h2>
+      <div className="h-[75vh] bg-gray-100 px-3 overflow-y-scroll ">
+      <div className="text-center mb-8">
+        <h2 className="text-xl font-semibold text-gray-800">
+          New Booking Request
+        </h2>
         <p className="text-gray-500 text-sm mt-1">
           Fill in the details below to create a new travel reservation
         </p>
-      </div>
+      </div>   
 
-      {/* Status & Platform */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Passengers */}
+      <section>
+         {/* Status & Platform */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div className="relative ">
+
         <Dropdown
           name="status"
           options={REQUEST_TYPE}
@@ -303,7 +148,12 @@ const StepOne = ({ formType = "add" }) => {
             handleInputChange({ target: { name: "status", value } })
           }
         />
-        {formType === "add" && (
+        <AlertMessage >
+          {errors?.status}
+        </AlertMessage>
+          </div>
+        {formType === "" && (
+          <div className="relative">
           <Dropdown
             options={PLATFORM}
             name="platform"
@@ -314,27 +164,29 @@ const StepOne = ({ formType = "add" }) => {
               handleInputChange({ target: { name: "platform", value } })
             }
           />
+           <AlertMessage >
+          {errors?.platform}
+        </AlertMessage>
+        </div>
         )}
       </div>
 
-      <hr className="border-gray-200 my-6" />
-
-      {/* Passengers */}
-      <section>
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-            <Users className="w-5 h-5 text-blue-600" />
+      <hr className="border-t border-[#eaeaea] my-7" />
+      
+        <div className="flex justify-between items-center mb-5">
+          <h3 className="text-lg font-medium text-gray-800 flex items-center gap-2">
+            <Users className="w-4 h-4 text-[#64748b]" />
             Passenger Details
           </h3>
           <button
             type="button"
             onClick={addPassenger}
-            className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-1"
+            className="text-xs bg-white text-gray-800 font-medium px-3 py-1.5 rounded-md border border-[#cbd5e1] hover:bg-[#f8fafc] transition"
           >
             + Add Passenger
           </button>
         </div>
-        <div className="space-y-5">
+        <div className="space-y-4">
           {formData.passengers.map((passenger, index) => (
             <PassengerCard
               key={index}
@@ -342,32 +194,34 @@ const StepOne = ({ formType = "add" }) => {
               passenger={passenger}
               onRemove={removePassenger}
               onPassengerChange={handlePassengerChange}
-              onGenderChange={handleGenderChange}
+              // onGenderChange={handleGenderChange}
               errors={errors}
             />
           ))}
         </div>
       </section>
 
-      <hr className="border-gray-200 my-6" />
+      <hr className="border-t border-[#eaeaea] my-7" />
 
       {/* Booking Info */}
       <section>
-        <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <Hash className="w-5 h-5 text-blue-600" />
+        <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center gap-2">
+          <Hash className="w-4 h-4 text-[#64748b]" />
           Booking Information
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InputField
+            className="bg-white"
             name="email"
             label="Contact Email"
             icon={Mail}
             type="email"
             value={formData.email}
             onChange={handleInputChange}
-            error={errors.email}
+            error={errors?.email}
           />
           <InputField
+            className="bg-white"
             name="gdsRefNo"
             label="GDS Ref No"
             icon={Hash}
@@ -375,6 +229,7 @@ const StepOne = ({ formType = "add" }) => {
             onChange={handleInputChange}
           />
           <InputField
+            className="bg-white"
             name="ticketNumber"
             label="Ticket Number"
             icon={Hash}
@@ -384,16 +239,17 @@ const StepOne = ({ formType = "add" }) => {
         </div>
       </section>
 
-      <hr className="border-gray-200 my-6" />
+      <hr className="border-t border-[#eaeaea] my-7" />
 
       {/* Pricing */}
-      <section>
-        <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <DollarSign className="w-5 h-5 text-blue-600" />
+      <section className="mb-4">
+        <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center gap-2">
+          <DollarSign className="w-4 h-4 text-[#64748b]" />
           Pricing Summary
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
           <InputField
+            className="bg-white"
             name="totalPrice"
             label="Total Price"
             icon={DollarSign}
@@ -402,9 +258,10 @@ const StepOne = ({ formType = "add" }) => {
             step="0.01"
             value={formData.totalPrice}
             onChange={handleInputChange}
-            error={errors.totalPrice}
+            error={errors?.totalPrice}
           />
           <InputField
+            className="bg-white"
             name="netCost"
             label="Net Cost"
             icon={DollarSign}
@@ -413,28 +270,31 @@ const StepOne = ({ formType = "add" }) => {
             step="0.01"
             value={formData.netCost}
             onChange={handleInputChange}
-            error={errors.netCost}
+            error={errors?.netCost}
           />
           <InputField
+            className="bg-white"
             name="mco"
             label="MCO (Markup)"
             icon={DollarSign}
             value={formData.mco}
             disabled
-            className="bg-blue-50"
+            className="bg-[#f8fafc]"
           />
         </div>
       </section>
 
+   </div>
       {/* Submit Button */}
-      <div className="flex justify-center pt-4">
-        <button
+      <div className="flex justify-center pt-1">
+        <Button
           type="submit"
-          className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:from-blue-700 hover:to-indigo-800 transition-all transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="w-full px-6 py-1 bg-[#4f46e5] text-white text-sm font-medium rounded-lg shadow-sm hover:bg-[#4338ca] transition focus:outline-none focus:ring-2 focus:ring-[#c7d2fe] focus:ring-offset-2"
         >
-          Submit Booking Request
-        </button>
+          Complete Booking Request
+        </Button>
       </div>
+      
     </form>
   );
 };
