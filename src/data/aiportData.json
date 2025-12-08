@@ -1,0 +1,42 @@
+[
+  {
+    "airportCode": "DEL",
+    "lat": "28.5603",
+    "lon": "77.1027",
+    "name": "Indira Gandhi International Airport",
+    "city": "New Delhi",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "woeid": "12513599",
+    "tz": "Asia\/Kolkata",
+    "phone": "",
+    "type": "Airports",
+    "email": "",
+    "url": "",
+    "runway_length": "12500",
+    "elev": "776",
+    "icao": "VIDP",
+    "direct_flights": "95",
+    "carriers": "70"
+  },
+{
+    "airportCode": "BOM",
+    "lat": "28.5603",
+    "lon": "77.1027",
+    "name": "Indira Gandhi International Airport",
+    "city": "New Delhi",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "woeid": "12513599",
+    "tz": "Asia\/Kolkata",
+    "phone": "",
+    "type": "Airports",
+    "email": "",
+    "url": "",
+    "runway_length": "12500",
+    "elev": "776",
+    "icao": "VIDP",
+    "direct_flights": "95",
+    "carriers": "70"
+  }
+]

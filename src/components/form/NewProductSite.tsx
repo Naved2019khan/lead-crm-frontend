@@ -47,8 +47,8 @@ export const NewProductSite: React.FC<NewProductSiteProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const siteId =  Number(initialData.siteId || formData.siteId);
-    onSubmit({...formData,siteId });
+    const siteId =  Number(formData.siteId);
+    onSubmit({...formData,siteId },initialData.siteId);
   };
 
   const statusColor = formData.siteStatus === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';

@@ -1,28 +1,20 @@
 "use client"
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
-export const Dropdown = ({ options, value, onChange, placeholder = "Select an option" }) => {
+export const Dropdown = ({ options,name, value, onChange, placeholder = "Select an option" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  useOutsideClick(dropdownRef, () => setIsOpen(false));
 
   const selectedOption = options.find(opt => opt.value === value);
 
   return (
-    <div ref={dropdownRef} className="relative w-64">
+    <div ref={dropdownRef} className="relative w-full">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        type='button'
+        onClick={() => setIsOpen(prev =>!prev)}
         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg flex items-center justify-between hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
       >
         <span className={selectedOption ? "text-gray-900" : "text-gray-400"}>
@@ -39,9 +31,10 @@ export const Dropdown = ({ options, value, onChange, placeholder = "Select an op
           <div className="max-h-60 overflow-y-auto">
             {options.map((option) => (
               <button
+                type='button'
                 key={option.value}
                 onClick={() => {
-                  onChange(option.value);
+                  onChange(option.value,name);
                   setIsOpen(false);
                 }}
                 className="w-full px-4 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-center justify-between group"

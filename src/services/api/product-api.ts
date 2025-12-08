@@ -21,10 +21,10 @@ export const getAgencySites = async () => {
   }
 };
 
-export const updateAgencySites = async ( data) => {
+export const updateAgencySites = async ( data,oldSiteId) => {
   try {
     const response = await axiosInstance.post(
-      `/api/product/update-agency/${data.siteId}`,
+      `/api/product/update-agency/${oldSiteId}`,
       data
     );
     return response.data;

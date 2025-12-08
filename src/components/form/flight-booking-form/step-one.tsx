@@ -1,279 +1,440 @@
 "use client";
-import React, { useState, useEffect, useCallback } from 'react';
-// --- Placeholder/Assumed Imports and Data ---
-// NOTE: You will need to ensure this data and component are available.
-const currency = [
-  { currency: 'USD', currencyName: 'US Dollar', countryCode: 'US' },
-  { currency: 'EUR', currencyName: 'Euro', countryCode: 'EU' },
-  { currency: 'GBP', currencyName: 'British Pound', countryCode: 'GB' },
-];
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  User,
+  Mail,
+  Hash,
+  DollarSign,
+  Calendar,
+  Plane,
+  Globe,
+  Users,
+  Tag,
+} from "lucide-react";
+import { Dropdown } from "@/components/ui/Dropdown";
+import { AlertMessage } from "@/components/ui/AlertMessage";
 
-const FlagIcon = ({ code, style }) => (
-  <span className="text-xl" style={style}>
-    {/* Placeholder for a real flag library */}
-    {code}
-  </span>
-);
+// --- Constants ---
+const currency = [
+  { currency: "USD", currencyName: "US Dollar", flag: "🇺🇸" },
+  { currency: "EUR", currencyName: "Euro", flag: "🇪🇺" },
+  { currency: "GBP", currencyName: "British Pound", flag: "🇬🇧" },
+];
 
 const PLATFORM = [
-  { keyword: 'SP', country: 'Spanish' },
-  { keyword: 'C', country: 'English' },
-  { keyword: 'IT', country: 'Italian' },
-  { keyword: 'DE', country: 'Germany' },
-  { keyword: 'PT', country: 'Portuguese' },
-  { keyword: 'FR', country: 'French' },
+  { value: "SP", label: "Spanish" },
+  { value: "C", label: "English" },
+  { value: "IT", label: "Italian" },
+  { value: "DE", label: "German" },
+  { value: "PT", label: "Portuguese" },
+  { value: "FR", label: "French" },
 ];
 
-// Initial state structure matching the form fields
-const initialFormData = {
-  status: '',
-  platform: '',
-  passengers: [
-    { firstName: '', lastName: '', dob: '', gender: '' }
-  ],
-  email: '',
-  gdsRefNo: '',
-  ticketNumber: '',
-  currency: '',
-  totalPrice: '',
-  netCost: '',
-  mco: '0.00',
-};
-// -----------------------------------
+const GENDER_OPTIONS = [
+  { value: "", label: "— Select —" },
+  { value: "Male", label: "Male" },
+  { value: "Female", label: "Female" },
+];
 
+const REQUEST_TYPE = [
+  { value: "", label: "— Select Type —" },
+  { value: "NEWBOOKING", label: "New Booking" },
+  { value: "CHANGEBOOKING", label: "Change Booking" },
+  { value: "CANCELLATION", label: "Cancellation" },
+  { value: "PETADD", label: "Add Pet" },
+  { value: "SEATUPGRADE", label: "Seat Upgrade" },
+  { value: "OTHERS", label: "Other Request" },
+];
+
+const initialFormData = {
+  status: "",
+  platform: "",
+  passengers: [{ firstName: "", lastName: "", dob: "", gender: "" }],
+  email: "",
+  gdsRefNo: "",
+  ticketNumber: "",
+  currency: "",
+  totalPrice: "",
+  netCost: "",
+  mco: "0.00",
+};
+
+// --- InputField Component (Reusable) ---
+const InputField = ({ name, label, icon: Icon, type = "text", value, onChange, error, ...props }) => (
+  <div className="flex-1 min-w-0 relative">
+    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+      {Icon && <Icon className="w-4 h-4 text-blue-600" />}
+      {label}
+    </label>
+    <input
+      name={name}
+      type={type}
+      value={value}
+      onChange={onChange}
+      className={`w-full rounded-lg border px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 ${
+        error
+          ? "border-red-400 focus:ring-red-200"
+          : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"
+      } transition`}
+      {...props}
+    />
+    <AlertMessage>
+    {error}
+    </AlertMessage>
+    {/* {error && <p className="mt-1 text-sm text-red-600">{error}</p>} */}
+  </div>
+);
+
+// --- PassengerCard: Moved OUTSIDE to prevent re-creation on every render ---
+const PassengerCard = ({ passenger, index, onRemove, onPassengerChange, errors, onGenderChange }) => {
+  const paxErrors = {
+    firstName: errors[`passenger-${index}-firstName`],
+    lastName: errors[`passenger-${index}-lastName`],
+    dob: errors[`passenger-${index}-dob`],
+  };
+
+  const handleInputChange = (e) => {
+    onPassengerChange(index, e);
+  };
+
+  return (
+    <div className="flex flex-col md:flex-row gap-4 p-4 bg-blue-50/30 rounded-xl border border-blue-100 items-end">
+  <div className="flex-1 min-w-0 flex flex-col">
+
+      <InputField
+        name="firstName"
+        label="First Name"
+        icon={User}
+        value={passenger.firstName}
+        onChange={handleInputChange}
+        error={paxErrors.firstName}
+        />
+        </div>
+  <div className="flex-1 min-w-0 flex flex-col">
+      <InputField
+        name="lastName"
+        label="Last Name"
+        icon={User}
+        value={passenger.lastName}
+        onChange={handleInputChange}
+        error={paxErrors.lastName}
+      />
+           </div>
+             <div className="flex-1 min-w-0 flex flex-col">
+      <InputField
+        name="dob"
+        label="Date of Birth"
+        icon={Calendar}
+        type="date"
+        value={passenger.dob}
+        onChange={handleInputChange}
+        max={new Date().toISOString().split("T")[0]}
+        error={paxErrors.dob}
+      />
+           </div>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <Dropdown
+          options={GENDER_OPTIONS}
+          name="gender"
+          label="Gender"
+          value={passenger.gender}
+          onChange={(value) => onGenderChange(index, value)}
+        />
+      </div>
+      {index > 0 && (
+        <button
+          type="button"
+          onClick={() => onRemove(index)}
+          className="mt-6 md:mt-0 w-full md:w-auto px-4 py-2.5 bg-red-500/10 text-red-600 font-medium rounded-lg border border-red-300 hover:bg-red-500/20 transition"
+        >
+          Remove
+        </button>
+      )}
+    </div>
+  );
+};
 
 const StepOne = ({ formType = "add" }) => {
   const [formData, setFormData] = useState(initialFormData);
+  const [errors, setErrors] = useState({});
 
-  // --- Utility Functions for State Management ---
+  // --- Validation ---
+  const validateField = (name, value) => {
+    switch (name) {
+      case "email":
+        return value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+          ? "Invalid email format"
+          : "";
+      case "totalPrice":
+        return value && (isNaN(value) || parseFloat(value) < 0)
+          ? "Must be a valid positive number"
+          : "";
+      case "netCost":
+        return value && (isNaN(value) || parseFloat(value) < 0)
+          ? "Must be a valid positive number"
+          : "";
+      case "firstName":
+      case "lastName":
+        return !value.trim() ? "This field is required" : "";
+      case "dob":
+        if (!value) return "Date of birth is required";
+        const today = new Date();
+        const dob = new Date(value);
+        return dob > today ? "Date cannot be in the future" : "";
+      default:
+        return "";
+    }
+  };
 
+  const validateForm = () => {
+    const newErrors = {};
+    formData.passengers.forEach((pax, idx) => {
+      ["firstName", "lastName", "dob"].forEach((field) => {
+        const error = validateField(field, pax[field]);
+        if (error) newErrors[`passenger-${idx}-${field}`] = error;
+      });
+    });
+    ["email", "totalPrice", "netCost"].forEach((field) => {
+      const error = validateField(field, formData[field]);
+      if (error) newErrors[field] = error;
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // --- Handlers ---
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handlePassengerChange = (index, e) => {
     const { name, value } = e.target;
-    const newPassengers = formData.passengers.map((passenger, i) => {
-      if (i === index) {
-        return { ...passenger, [name]: value };
-      }
-      return passenger;
+    setFormData((prev) => {
+      const newPassengers = [...prev.passengers];
+      newPassengers[index] = { ...newPassengers[index], [name]: value };
+      return { ...prev, passengers: newPassengers };
     });
-    setFormData(prev => ({ ...prev, passengers: newPassengers }));
+    const key = `passenger-${index}-${name}`;
+    if (errors[key]) {
+      setErrors((prev) => ({ ...prev, [key]: "" }));
+    }
+  };
+
+  const handleGenderChange = (index, value) => {
+    setFormData((prev) => {
+      const newPassengers = [...prev.passengers];
+      newPassengers[index] = { ...newPassengers[index], gender: value };
+      return { ...prev, passengers: newPassengers };
+    });
+    const key = `passenger-${index}-gender`;
+    if (errors[key]) {
+      setErrors((prev) => ({ ...prev, [key]: "" }));
+    }
   };
 
   const addPassenger = useCallback(() => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      passengers: [...prev.passengers, { firstName: '', lastName: '', dob: '', gender: '' }],
+      passengers: [...prev.passengers, { firstName: "", lastName: "", dob: "", gender: "" }],
     }));
   }, []);
 
   const removePassenger = useCallback((index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       passengers: prev.passengers.filter((_, i) => i !== index),
     }));
+    setErrors((prev) => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach((key) => {
+        if (key.startsWith(`passenger-${index}-`)) delete updated[key];
+      });
+      return updated;
+    });
   }, []);
 
-  // --- MCO Calculation Effect ---
+  // --- Auto-calculate MCO ---
   useEffect(() => {
-    const totalPrice = Number(formData.totalPrice || 0);
-    const netCost = Number(formData.netCost || 0);
-    const mcoValue = (totalPrice - netCost).toFixed(2);
-
-    // Only update if the MCO value has actually changed
-    if (formData.mco !== mcoValue) {
-      setFormData(prev => ({ ...prev, mco: mcoValue }));
+    const totalPrice = parseFloat(formData.totalPrice) || 0;
+    const netCost = parseFloat(formData.netCost) || 0;
+    const mco = Math.max(0, totalPrice - netCost).toFixed(2);
+    if (formData.mco !== mco) {
+      setFormData((prev) => ({ ...prev, mco }));
     }
-  }, [formData.totalPrice, formData.netCost, formData.mco]);
+  }, [formData.totalPrice, formData.netCost]);
 
-  // --- Simple Form Field Component (Tailwind Styled) ---
-  const InputField = ({ name, label, type = "text", disabled = false, onChange, value, min, max }) => (
-    <div className="flex-1 min-w-0">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        min={min}
-        max={max}
-        className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-gray-100"
-      />
-    </div>
-  );
-
-  const SelectField = ({ name, label, onChange, value, children }) => (
-    <div className="flex-1 min-w-0">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
-      <select
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="mt-1 block w-full rounded-md border border-gray-300 bg-white shadow-sm p-2 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-      >
-        {children}
-      </select>
-    </div>
-  );
-  // -----------------------------------
-
-  // Function to prevent the form from submitting (Optional, but good practice)
+  // --- Submit ---
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
-    // Add your actual form submission logic here
+    if (validateForm()) {
+      console.log("✅ Valid Form Data:", formData);
+    } else {
+      console.log("❌ Validation failed");
+    }
   };
 
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-4 md:p-6 bg-white shadow-lg rounded-lg">
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Status Field */}
-        <SelectField name="status" label="Status" value={formData.status} onChange={handleInputChange}>
-          <option value="">-----Select Status-----</option>
-          <option value="NEWBOOKING">New Booking</option>
-          <option value="CHANGEBOOKING">Change Booking</option>
-          <option value="CANCELLATION">Cancellation</option>
-          <option value="PETADD">Pet Add</option>
-          <option value="SEATUPGRADE">Seat Upgrade</option>
-          <option value="OTHERS">Others</option>
-        </SelectField>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-8 p-5 md:p-8 bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl max-w-6xl mx-auto"
+    >
+      {/* Header */}
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-600 text-white mb-4">
+          <Plane className="w-7 h-7" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-800">New Booking Request</h2>
+        <p className="text-gray-500 text-sm mt-1">
+          Fill in the details below to create a new travel reservation
+        </p>
+      </div>
 
-        {/* Platform Field (Conditional) */}
-        {formType === 'add' && (
-          <SelectField label="platform" name="platform" value={formData.platform} onChange={handleInputChange}>
-            <option value="">-----Select Platform-----</option>
-            {PLATFORM.map(({ keyword, country }) => (
-              <option value={keyword} key={country}>
-                {country}
-              </option>
-            ))}
-          </SelectField>
+      {/* Status & Platform */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Dropdown
+          name="status"
+          options={REQUEST_TYPE}
+          label="Request Type"
+          icon={Tag}
+          value={formData.status}
+          onChange={(value) =>
+            handleInputChange({ target: { name: "status", value } })
+          }
+        />
+        {formType === "add" && (
+          <Dropdown
+            options={PLATFORM}
+            name="platform"
+            label="Platform Language"
+            icon={Globe}
+            value={formData.platform}
+            onChange={(value) =>
+              handleInputChange({ target: { name: "platform", value } })
+            }
+          />
         )}
       </div>
-      
-      <hr className="my-6" />
 
-      {/* Passengers Section */}
+      <hr className="border-gray-200 my-6" />
+
+      {/* Passengers */}
       <section>
-        <h3 className="text-xl font-semibold mb-4 text-gray-800">Add Passengers</h3>
-        
-        <div className="space-y-4">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            <Users className="w-5 h-5 text-blue-600" />
+            Passenger Details
+          </h3>
+          <button
+            type="button"
+            onClick={addPassenger}
+            className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-1"
+          >
+            + Add Passenger
+          </button>
+        </div>
+        <div className="space-y-5">
           {formData.passengers.map((passenger, index) => (
-            <div 
-              key={index} // Using index is okay when keys don't rely on array position (no sorting/filtering)
-              className="flex flex-col md:flex-row gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50 items-end"
-            >
-              <InputField
-                name="firstName"
-                label="First Name"
-                value={passenger.firstName}
-                onChange={(e) => handlePassengerChange(index, e)}
-              />
-              <InputField
-                name="lastName"
-                label="Last Name"
-                value={passenger.lastName}
-                onChange={(e) => handlePassengerChange(index, e)}
-              />
-              <InputField
-                name="dob"
-                label="Pax DOB"
-                type="date"
-                value={passenger.dob}
-                onChange={(e) => handlePassengerChange(index, e)}
-                max={new Date().toISOString().split("T")[0]} // disableFuture equivalent
-              />
-              <SelectField
-                name="gender"
-                label="Gender"
-                value={passenger.gender}
-                onChange={(e) => handlePassengerChange(index, e)}
-              >
-                <option value="">Select</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </SelectField>
-              
-              {formData.passengers.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removePassenger(index)}
-                  className="w-full md:w-auto px-4 py-2 bg-red-600 text-white font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out h-[42px]"
-                >
-                  Delete
-                </button>
-              )}
-            </div>
+            <PassengerCard
+              key={index}
+              index={index}
+              passenger={passenger}
+              onRemove={removePassenger}
+              onPassengerChange={handlePassengerChange}
+              onGenderChange={handleGenderChange}
+              errors={errors}
+            />
           ))}
         </div>
-
-        <button
-          type="button"
-          className="mt-4 px-4 py-2 bg-indigo-600 text-white font-medium rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
-          onClick={addPassenger}
-        >
-          + Add more Pax
-        </button>
       </section>
 
-      <hr className="my-6" />
+      <hr className="border-gray-200 my-6" />
 
-      {/* Other Details */}
+      {/* Booking Info */}
       <section>
-        <h3 className="text-xl font-semibold mb-4 text-gray-800">Other Details</h3>
-        <div className="flex flex-col md:flex-row gap-4">
-          <InputField name="email" label="Email" value={formData.email} onChange={handleInputChange} />
-          <InputField name="gdsRefNo" label="GDS Ref. No" value={formData.gdsRefNo} onChange={handleInputChange} />
-          <InputField name="ticketNumber" label="Ticket Number" value={formData.ticketNumber} onChange={handleInputChange} />
-          
-          <SelectField
-            name="currency"
-            label="Currency"
-            value={formData.currency}
+        <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <Hash className="w-5 h-5 text-blue-600" />
+          Booking Information
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <InputField
+            name="email"
+            label="Contact Email"
+            icon={Mail}
+            type="email"
+            value={formData.email}
             onChange={handleInputChange}
-          >
-            <option value="">Select</option>
-            {currency.map((item) => (
-              <option key={item.currency} value={item.currency} className="flex items-center">
-                {`${item.currency} - ${item.currencyName}`}
-              </option>
-            ))}
-          </SelectField>
+            error={errors.email}
+          />
+          <InputField
+            name="gdsRefNo"
+            label="GDS Ref No"
+            icon={Hash}
+            value={formData.gdsRefNo}
+            onChange={handleInputChange}
+          />
+          <InputField
+            name="ticketNumber"
+            label="Ticket Number"
+            icon={Hash}
+            value={formData.ticketNumber}
+            onChange={handleInputChange}
+          />
         </div>
       </section>
-      
-      <hr className="my-6" />
 
-      {/* Price Details */}
+      <hr className="border-gray-200 my-6" />
+
+      {/* Pricing */}
       <section>
-        <h3 className="text-xl font-semibold mb-4 text-gray-800">Price Details</h3>
-        <div className="flex flex-col md:flex-row gap-4">
-          <InputField name="totalPrice" label="Total Price" value={formData.totalPrice} onChange={handleInputChange} type="number" />
-          <InputField name="netCost" label="Net Cost" value={formData.netCost} onChange={handleInputChange} type="number" />
-          <InputField name="mco" label="MCO" value={formData.mco} disabled />
+        <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <DollarSign className="w-5 h-5 text-blue-600" />
+          Pricing Summary
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <InputField
+            name="totalPrice"
+            label="Total Price"
+            icon={DollarSign}
+            type="number"
+            min="0"
+            step="0.01"
+            value={formData.totalPrice}
+            onChange={handleInputChange}
+            error={errors.totalPrice}
+          />
+          <InputField
+            name="netCost"
+            label="Net Cost"
+            icon={DollarSign}
+            type="number"
+            min="0"
+            step="0.01"
+            value={formData.netCost}
+            onChange={handleInputChange}
+            error={errors.netCost}
+          />
+          <InputField
+            name="mco"
+            label="MCO (Markup)"
+            icon={DollarSign}
+            value={formData.mco}
+            disabled
+            className="bg-blue-50"
+          />
         </div>
       </section>
 
-      {/* Optional: Add a Submit Button */}
-      {/* <div className="mt-6">
+      {/* Submit Button */}
+      <div className="flex justify-center pt-4">
         <button
           type="submit"
-          className="px-6 py-3 bg-green-600 text-white font-bold rounded-md shadow-lg hover:bg-green-700 transition duration-150"
+          className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:from-blue-700 hover:to-indigo-800 transition-all transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Submit Form
+          Submit Booking Request
         </button>
-      </div> */}
+      </div>
     </form>
   );
 };

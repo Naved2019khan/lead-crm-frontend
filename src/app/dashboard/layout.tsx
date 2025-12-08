@@ -1,5 +1,5 @@
 import DashboardHeader from "@/components/headers/DashboardHeader";
-import { Sidebar } from "@/components/section/dashboard/Sidebar";
+import { Sidebar } from "@/components/sidebar/Sidebar";
 import React from "react";
 
 const DashboardLayout = ({

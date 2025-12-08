@@ -27,13 +27,13 @@ const ThankYouModal: React.FC<ThankYouModalProps> = ({
   // Replace '<Modal>' with your actual Modal component usage.
   return (
     <Modal isOpen={isOpen} onClose={onClose}> 
-      <div className="w-full max-w-sm p-6 bg-white shadow-2xl rounded-xl border border-gray-100 transform transition-all">
+      <div className="w-full min-w-md mx-auto mt-12 sm:mt-24 px-4 sm:px-6 lg:px-8 py-8 sm p-6 bg-white shadow-2xl rounded-xl border border-gray-100 transform transition-all">
         
         {/* Success Icon */}
         <div className="flex justify-center mb-4">
-          <div className="p-2 rounded-full bg-green-100">
+          <div className={`p-2 rounded-full ${title == "Error" ? "bg-red-600" : "bg-green-100"}`}>
             <svg 
-              className="w-8 h-8 text-green-600" 
+              className={`w-8 h-8 text-green-600`} 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24" 

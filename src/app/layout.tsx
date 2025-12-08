@@ -3,6 +3,7 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import { GlobelLayover } from "@/components/Layover/GlobelLayover";
 import ReduxProvider from "./ReduxProvider";
+import { Toaster } from "sonner";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -26,6 +27,7 @@ export default function RootLayout({
         <ReduxProvider>
           <GlobelLayover />
           {children}
+          <Toaster position="top-right" />
         </ReduxProvider>
       </body>
     </html>

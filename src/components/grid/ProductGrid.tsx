@@ -40,6 +40,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(undefined);
   const [isSubmited, setIsSubmited] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const isNewAgency = !editData;
 
   const onClose = () => {
@@ -59,19 +60,27 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       setIsSubmited(true);
       setShowForm(false);
     } catch (error) {
-      console.log(error);
+
+      setErrorMessage(error.response.data.message || error.message);
+      console.log(error, "error");
     }
   };
-  const handleEditProduct = async (val) => {
+  const handleEditProduct = async (val,oldSiteId) => {
     try {
-      const res = await updateAgencySites(val);
+      const res = await updateAgencySites(val,oldSiteId);
       await updateSiteAction();
       setIsSubmited(true);
       setShowForm(false);
     } catch (error) {
+        setErrorMessage(error.response.data.message || error.message);
       console.log(error);
     }
   };
+
+  const handleMessageClose = () => {
+    setIsSubmited(false);
+    setErrorMessage("");
+  }
 
   return (
     <>
@@ -84,9 +93,11 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       </Modal>
 
       <ThankYouModal
-        isOpen={isSubmited}
-        onClose={() => setIsSubmited(false)}
+        isOpen={isSubmited || errorMessage}
+        onClose={handleMessageClose}
+        title={errorMessage ? "Error" : isNewAgency ? "Agency Created" : "Product Edited"}
         message={
+          errorMessage ? errorMessage :
           isNewAgency
             ? "Agency Created Successfully"
             : "Product Edited Successfully"
