@@ -13,6 +13,7 @@ const stepperSlice = createSlice({
       const { stepCount } = state;
       if (stepCount < 3) {
         state.stepCount = stepCount + 1;
+        state.data = {...state.data,...action.payload}
       }
     },
     handleBack: (state, action) => {
