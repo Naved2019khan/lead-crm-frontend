@@ -1,9 +1,9 @@
 import axios from "axios"
 const CRM_URL = process.env.NEXT_PUBLIC_BASE_URL
 const CRM_ENDPOINT = {
-    getAllLead : "/api/agency/get-all-agency-leads",
-    getLeadById : "/api/agency/get-agency-lead",
-    updateLead : "/api/agency/update-agency-lead"
+    getAllLead : "/agency/get-all-agency-leads",
+    getLeadById : "/agency/get-agency-lead",
+    updateLead : "/agency/update-agency-lead"
 }
 
 export const getAllLeads = async () => {

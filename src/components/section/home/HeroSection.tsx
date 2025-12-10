@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 export default function HeroSection() {
 
   async function apiTesting() {
-    const apiResponse = await axios.post(process.env.NEXT_PUBLIC_BASE_URL + '/api/test');
+    const apiResponse = await axios.post(process.env.NEXT_PUBLIC_BASE_URL + '/test');
     console.log(apiResponse,"apiResponse")
   }
 

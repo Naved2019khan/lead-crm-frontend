@@ -67,3 +67,21 @@ export const updateFlightSites = async (siteId: number, data) => {
     throw error;
   }
 };
+
+
+export const productApi = {
+  // createAgencySites,
+  // getAgencySites,
+  // updateAgencySites,
+  // createFlightSites,
+  // getFlightSites,
+  // updateFlightSites,
+  getAllProducts: async () => {
+    try {
+      const response = await axiosInstance.get("/product/get-all-product");
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+};

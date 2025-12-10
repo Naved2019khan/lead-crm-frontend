@@ -49,7 +49,7 @@ DELETE http://localhost:5000/api/blogs/:id
 GET http://localhost:5000/api/blogs/stats/overview
 */
 
-const API_URL = process.env.NEXT_PUBLIC_BASE_URL + "/api" || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000';
 
 export const blogAPI = {
   // Create new blog
@@ -71,7 +71,7 @@ export const blogAPI = {
 
   // Get single blog
   getOne: async (identifier) => {
-    const response = await fetch(`${API_URL}/blogs/${identifier}`);
+    const response = await fetch(`${API_URL}/blog/${identifier}`);
     return response.json();
   },
 

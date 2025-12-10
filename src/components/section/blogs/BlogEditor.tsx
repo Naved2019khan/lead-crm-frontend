@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { Bold, Italic, List, ListOrdered, Heading1, Heading2, Heading3, Link, Image, Eye, Save } from 'lucide-react';
 import { blogAPI } from '@/services/api/blog-api';
+import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
 
-export default function BlogEditor() {
-  const [formData, setFormData] = useState({
+const fallback = {
     title: '',
     slug: '',
     metaTitle: '',
@@ -15,7 +16,11 @@ export default function BlogEditor() {
     featuredImage: '',
     content: '',
     status: 'draft'
-  });
+  }
+
+export default function BlogEditor({ initialData = fallback }) {
+  const [formData, setFormData] = useState(initialData);
+  const { siteId } = useParams()
 
   const [preview, setPreview] = useState(false);
 
@@ -99,14 +104,16 @@ export default function BlogEditor() {
   const handleSave = async () => {
     const blogData = {
       ...formData,
+      siteId : parseInt(siteId),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
+    // console.log(blogData)
 
     const response = await blogAPI.create(blogData);
     
-    console.log('Blog Post Data:', response);
-    alert('Blog post saved! Check console for data.');
+    toast.success('Blog post saved! Check console for data.');
+    // alert('Blog post saved! Check console for data.');
   };
 
   return (

@@ -1,8 +1,8 @@
 import axios from "axios";
 const CRM_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const CRM_ENDPOINT = {
-  signIn: "/api/login",
-  signUp: "/api/signup",
+  signIn: "/login",
+  signUp: "/signup",
 };
 
 export const signInNetworkCall = async ({payload}) => {
