@@ -1,16 +1,16 @@
-import { Dropdown } from '@/components/ui/Dropdown';
-import { InputField } from '@/components/ui/InputField';
-import { useState } from 'react';
+import { Dropdown } from "@/components/ui/Dropdown";
+import { InputField } from "@/components/ui/InputField";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 // Optional: Replace this with your actual countries import later
 const countries = [
-  { code: 'US', label: 'United States' },
-  { code: 'CA', label: 'Canada' },
-  { code: 'GB', label: 'United Kingdom' },
-  { code: 'DE', label: 'Germany' },
-  { code: 'FR', label: 'France' },
-  { code: 'AU', label: 'Australia' },
-  // Add more as needed
+  { value: "US", label: "United States" },
+  { value: "CA", label: "Canada" },
+  { value: "GB", label: "United Kingdom" },
+  { value: "DE", label: "Germany" },
+  { value: "FR", label: "France" },
+  { value: "AU", label: "Australia" },
 ];
 
 type FormData = {
@@ -24,38 +24,45 @@ type FormData = {
 
 const StepThree = () => {
   const [formData, setFormData] = useState<FormData>({
-    address: '',
-    city: '',
-    country: '',
-    state: '',
-    postalCode: '',
-    billingPhone: '',
+    address: "",
+    city: "",
+    country: "",
+    state: "",
+    postalCode: "",
+    billingPhone: "",
   });
-
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const finalFormData = useSelector((state: any) => state.stepperSlice.data)
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
+    {}
+  );
 
   const validateStepThree = (data: FormData) => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
 
-    if (!data.address.trim()) newErrors.address = 'Address is required';
-    if (!data.city.trim()) newErrors.city = 'City is required';
-    if (!data.country) newErrors.country = 'Country is required';
-    if (!data.state.trim()) newErrors.state = 'State is required';
+    if (!data.address.trim()) newErrors.address = "Address is required";
+    if (!data.city.trim()) newErrors.city = "City is required";
+    if (!data.country) newErrors.country = "Country is required";
+    if (!data.state.trim()) newErrors.state = "State is required";
     if (!data.postalCode.trim()) {
-      newErrors.postalCode = 'Postal/Zip code is required';
-    } else if (!/^\d{5}(-\d{4})?$/.test(data.postalCode) && data.country === 'US') {
-      newErrors.postalCode = 'Invalid US ZIP code';
+      newErrors.postalCode = "Postal/Zip code is required";
+    } else if (
+      !/^\d{5}(-\d{4})?$/.test(data.postalCode) &&
+      data.country === "US"
+    ) {
+      newErrors.postalCode = "Invalid US ZIP code";
     }
     if (!data.billingPhone.trim()) {
-      newErrors.billingPhone = 'Billing phone is required';
+      newErrors.billingPhone = "Billing phone is required";
     } else if (!/^\+?[\d\s\-()]+$/.test(data.billingPhone)) {
-      newErrors.billingPhone = 'Invalid phone number format';
+      newErrors.billingPhone = "Invalid phone number format";
     }
 
     return newErrors;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputFieldElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear error when user types
@@ -68,24 +75,28 @@ const StepThree = () => {
     e.preventDefault();
     const validationErrors = validateStepThree(formData);
     setErrors(validationErrors);
-
     if (Object.keys(validationErrors).length === 0) {
-      console.log('✅ Valid Form Data:', formData);
+      console.log("✅ Valid Form Data:", {...finalFormData,...formData});
       // Proceed to next step or submit
     } else {
-      console.log('❌ Validation failed');
+      console.log("❌ Validation failed");
     }
   };
 
   return (
     <div className="max-w-xl  p-4 bg-gray-100">
-      <h3 className="text-xl font-semibold text-gray-800 mb-6">Billing Information</h3>
+      <h3 className="text-xl font-semibold text-gray-800 mb-6">
+        Billing Information
+      </h3>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Address & City */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="address"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Address *
             </label>
             <InputField
@@ -95,7 +106,7 @@ const StepThree = () => {
               value={formData.address}
               onChange={handleChange}
               className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                errors.address ? 'border-red-500' : 'border-gray-300'
+                errors.address ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="123 Main St"
               error={errors?.address}
@@ -103,7 +114,10 @@ const StepThree = () => {
           </div>
 
           <div>
-            <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="city"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               City *
             </label>
             <InputField
@@ -113,18 +127,20 @@ const StepThree = () => {
               value={formData.city}
               onChange={handleChange}
               className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                errors.city ? 'border-red-500' : 'border-gray-300'
+                errors.city ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="New York"
               error={errors?.city}
             />
-           
           </div>
         </div>
 
         {/* Country */}
         <div>
-          <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="country"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Country *
           </label>
           <Dropdown
@@ -132,17 +148,22 @@ const StepThree = () => {
             name="country"
             options={countries}
             value={formData.country}
-            onChange={handleChange}
+            onChange={(value) =>
+              handleChange({ target: { name: "country", value: value } })
+            }
             className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-              errors.country ? 'border-red-500' : 'border-gray-300'
+              errors.country ? "border-red-500" : "border-gray-300"
             }`}
-         />
+          />
         </div>
 
         {/* State, Postal Code, Phone */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="state"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               State *
             </label>
             <InputField
@@ -151,15 +172,17 @@ const StepThree = () => {
               type="text"
               value={formData.state}
               onChange={handleChange}
-              className='bg-white'
+              className="bg-white"
               placeholder="CA"
               error={errors?.state}
             />
-            
           </div>
 
           <div>
-            <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="postalCode"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Postal/Zip Code *
             </label>
             <InputField
@@ -169,7 +192,7 @@ const StepThree = () => {
               value={formData.postalCode}
               onChange={handleChange}
               className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                errors.postalCode ? 'border-red-500' : 'border-gray-300'
+                errors.postalCode ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="90210"
               error={errors?.postalCode}
@@ -177,7 +200,10 @@ const StepThree = () => {
           </div>
 
           <div>
-            <label htmlFor="billingPhone" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="billingPhone"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Billing Phone *
             </label>
             <InputField
@@ -187,7 +213,7 @@ const StepThree = () => {
               value={formData.billingPhone}
               onChange={handleChange}
               className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                errors.billingPhone ? 'border-red-500' : 'border-gray-300'
+                errors.billingPhone ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="+1 (555) 123-4567"
               error={errors?.billingPhone}
@@ -201,7 +227,7 @@ const StepThree = () => {
             type="submit"
             className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
           >
-           Complete
+            Complete
           </button>
         </div>
       </form>

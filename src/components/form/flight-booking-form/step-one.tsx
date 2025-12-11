@@ -112,7 +112,7 @@ const StepOne = ({ formType = "" }) => {
     const error = paxGroupValidatior(formData);
     setErrors(error);
     if (!error) {
-      dispatch(handleNext())
+      dispatch(handleNext(formData))
       console.log("✅ Valid Form Data:", formData);
     } else {
       console.log("❌ Validation failed");

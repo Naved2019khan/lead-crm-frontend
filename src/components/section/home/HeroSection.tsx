@@ -1,19 +1,6 @@
-"use client"
-import axios from 'axios';
 import { ArrowRight, Play, Sparkles } from 'lucide-react';
-import { useEffect } from 'react';
 
 export default function HeroSection() {
-
-  async function apiTesting() {
-    const apiResponse = await axios.post(process.env.NEXT_PUBLIC_BASE_URL + '/api/test');
-    console.log(apiResponse,"apiResponse")
-  }
-
-
-  useEffect(() => {
-    apiTesting();
-  },[])
 
   return (
     <section className="relative bg-white overflow-hidden">
@@ -32,7 +19,7 @@ export default function HeroSection() {
                 <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   Products Faster
                 </span>
-              </h1>
+              </h1>  
               <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
                 Transform your ideas into reality with our cutting-edge platform. 
                 Designed for modern teams who value speed, quality, and innovation.

@@ -64,22 +64,14 @@ const StepTwo: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(handleNext())
-    console.log('Form Data:', formData);
+    dispatch(handleNext(formData))
+    console.log('✅ Valid Form Data:', formData);
 
-    // Add your actual form submission logic here
   };
 
 
-
-  /**
-   * Universal change handler for all simple fields.
-   * Note: This assumes a flat state structure where 'stepTwo.field' becomes 'field' in the state.
-   */
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    // Standardizing the input name for a flat state structure
-    // e.g., 'stepTwo.from' becomes 'from', 'stepTwo.arrivalflights.0.returnFrom' becomes 'returnFrom'
     let stateName = name.split('.').pop() as keyof FlightDetails;
 
     // Handle cabinClass name mapping for return flight
