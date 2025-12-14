@@ -1,12 +1,12 @@
 "use client"
 import React, { useState } from 'react';
 import {  Users } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 
 
 const DashboardMain: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <>
         {/* Page Content */}

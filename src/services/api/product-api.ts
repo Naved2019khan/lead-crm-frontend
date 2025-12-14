@@ -3,7 +3,7 @@ import axiosInstance from "@/utils/axiosInstance";
 export const createAgencySites = async (data) => {
   try {
     const response = await axiosInstance.post(
-      "/api/product/create-agency-site",
+      "/product/create-agency-site",
       data
     );
     return response.data;
@@ -12,9 +12,14 @@ export const createAgencySites = async (data) => {
   }
 };
 
+/**
+ * Retrieves all agency sites from the server.
+ * @returns {Promise<object>} The response data from the server.
+ * @throws {Error} If there is an error making the request.
+ */
 export const getAgencySites = async () => {
   try {
-    const response = await axiosInstance.post("/api/product/get-all-agency",{});
+    const response = await axiosInstance.post("/product/get-all-agency",{});
     return response.data;
   } catch (error) {
     throw error;
@@ -36,7 +41,7 @@ export const updateAgencySites = async ( data,oldSiteId) => {
 export const createFlightSites = async (data) => {
   try {
     const response = await axiosInstance.post(
-      "/api/product/create-flight-site",
+      "/product/create-flight-site",
       data
     );
     return response.data;
@@ -48,7 +53,7 @@ export const createFlightSites = async (data) => {
 export const getFlightSites = async () => {
   try {
     const response = await axiosInstance.post(
-      "/api/product/get-all-flight-site"
+      "/product/get-all-flight-site"
     );
     return response.data;
   } catch (error) {

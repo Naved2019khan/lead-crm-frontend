@@ -392,7 +392,7 @@ export default function BlogListingPage() {
                     <div className="md:w-72 h-48 md:h-auto bg-slate-200 flex-shrink-0">
                       {blog?.featuredImage ? (
                         <img
-                          src={blog.featuredImage}` `
+                          src={blog.featuredImage}
                           alt={blog?.title || 'Blog image'}
                           className="w-full h-full object-cover"
                           onError={(e) => {

@@ -1,19 +1,8 @@
 "use client"
-import axios from 'axios';
 import { ArrowRight, Play, Sparkles } from 'lucide-react';
-import { useEffect } from 'react';
 
 export default function HeroSection() {
-
-  async function apiTesting() {
-    const apiResponse = await axios.post(process.env.NEXT_PUBLIC_BASE_URL + '/test');
-    console.log(apiResponse,"apiResponse")
-  }
-
-
-  useEffect(() => {
-    apiTesting();
-  },[])
+ 
 
   return (
     <section className="relative bg-white overflow-hidden">

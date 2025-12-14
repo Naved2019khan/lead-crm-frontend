@@ -5,7 +5,7 @@ import "dotenv/config";   // ← this loads .env.local automatically
 
 export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
     pages: {
-    signIn: '/',
+    signIn: '/'
   },
   providers: [
     Credentials({
@@ -20,8 +20,7 @@ export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
           if (!user) return null; // return null on failure
           return user; // must be plain object
         } catch (err) {
-          console.error("Authorize error:", err);
-          return null; // Prevent crash
+         throw err; // Prevent crash
         }
       },
     }),

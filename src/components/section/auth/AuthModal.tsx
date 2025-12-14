@@ -16,9 +16,8 @@ export const AuthModal = () => {
     password: "naved2019khan@gmail.com",
     confirmPassword: "",
   });
-  const handleFormChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleFormChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
   const formsUI = [
     <SignInForm
       key={"signIn"}

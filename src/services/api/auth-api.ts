@@ -1,3 +1,4 @@
+import { errorHandler } from "@/utils/errorHandler";
 import axios from "axios";
 const CRM_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const CRM_ENDPOINT = {
@@ -10,7 +11,7 @@ export const signInNetworkCall = async ({payload}) => {
     const response = await axios.post(CRM_URL + CRM_ENDPOINT.signIn, payload);
     return response.data;
   } catch (error) {
-    throw error;
+    throw errorHandler(error);
   }
 };
 
