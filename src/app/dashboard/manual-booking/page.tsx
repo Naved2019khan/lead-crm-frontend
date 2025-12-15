@@ -7,7 +7,8 @@ const Page = () => {
   return (
     <div>
       <BookingTableToolbar />
-      <FlightBooking /></div>
+      <FlightBooking />
+      </div>
   )
 }
 

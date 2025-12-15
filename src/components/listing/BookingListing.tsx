@@ -48,7 +48,7 @@ const BookingListing = ({ f, handlePaxSelectionPopup,handleDetailPage , onChange
   } = getJourneyInfo(f?.flightInfo);
 
   return (
-    <tr key={f?.orderId} className="hover:bg-emerald-50">
+    <tr key={f?.orderId} className="hover:bg-emerald-50 max-h-[100px]">
        <td className="px-2 py-3 ">
         <div className="w-36 px-2">
           <Dropdown onChange={(value)=>{onChange(value,f?.orderId)}} value={f?.bookingStatus} options={BookingOption} />

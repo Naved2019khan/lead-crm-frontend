@@ -41,6 +41,7 @@ interface NavItemProps {
     } else {
       setActiveItem(href);
     }
+      setActiveItem(href);
   };
 
 
