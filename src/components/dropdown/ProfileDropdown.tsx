@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 interface ProfileDropdownProps {
   userName?: string;
@@ -7,10 +8,10 @@ interface ProfileDropdownProps {
   avatarUrl?: string;
 }
 
-export default function ProfileDropdown({ 
-  userName = "John Doe", 
+export default function ProfileDropdown({
+  userName = "John Doe",
   userEmail = "john@example.com",
-  avatarUrl 
+  avatarUrl
 }: ProfileDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -27,9 +28,10 @@ export default function ProfileDropdown({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-    const handleLogout = () => {
-    console.log('Logging out...');
-    // Add your logout logic here
+  const handleLogout = () => {
+    signOut({
+      callbackUrl: "/",
+    })
     setIsOpen(false);
   };
 
@@ -53,8 +55,8 @@ export default function ProfileDropdown({
         className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
       >
         {avatarUrl ? (
-          <img 
-            src={avatarUrl} 
+          <img
+            src={avatarUrl}
             alt={userName}
             className="w-8 h-8 rounded-full object-cover"
           />
@@ -66,10 +68,9 @@ export default function ProfileDropdown({
         <span className="text-sm font-medium text-gray-700 hidden sm:block">
           {userName}
         </span>
-        <ChevronDown 
-          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-            isOpen ? 'rotate-180' : ''
-          }`}
+        <ChevronDown
+          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''
+            }`}
         />
       </button>
 

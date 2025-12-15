@@ -1,57 +1,10 @@
 import { Alert } from "@/components/popup/Alert";
-import { signInFormValidator } from "@/utils/validator/signInFormValidator";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useSignInForm } from "@/hooks/useSignInForm";
 
-export default function SignInForm({ onChange, formData, onSwitchToSignUp ,onSuccess}) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState({});
-  const router = useRouter();
 
-  const handleSubmit = async () => {
-    const errors = signInFormValidator(formData);
-    setError(errors);
-    // if (errors) {
-    //   return;
-    // }
-
-    setLoading(true)
-    try {
-      signIn("credentials", {
-          email: formData.email,
-          password: formData.password,
-          redirect: true,
-          callbackUrl: "/dashboard",
-        });
-      setTimeout(
-        () =>
-          onSuccess({
-            email: formData.email,
-            name: formData.name,
-          }),
-        500
-      );
-
-      // if(response.status !== 200){
-      //   setError({
-      //     email: "Invalid email or password",
-      //   });
-      //   return;
-      // }
-      
-      // router.push("/dashboard");
-    } catch (err) {
-      console.log(err,"ERR")
-      // setError('Sign up failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") handleSubmit();
-  };
+export default function SignInForm({ onChange, formData, onSwitchToSignUp}) {
+ const { errors, loading, handleSubmit } = useSignInForm(formData);
+ const handleKeyPress = (e) => { if (e.key === "Enter") handleSubmit()};
 
   return (
     <>
@@ -86,8 +39,8 @@ export default function SignInForm({ onChange, formData, onSwitchToSignUp ,onSuc
                   autoComplete="email"
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                 />
-                {error.email && (
-                  <Alert type="error" message={error.email} />
+                {errors.email && (
+                  <Alert type="error" message={errors.email} />
                 )}
               </div>
             </div>
@@ -119,8 +72,8 @@ export default function SignInForm({ onChange, formData, onSwitchToSignUp ,onSuc
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                 />
-                {error.password && (
-                  <Alert type="error" message={error.password} />
+                {errors.password && (
+                  <Alert type="error" message={errors.password} />
                 )}
               </div>
             </div>

@@ -111,7 +111,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             subtitle="new agency form"
             onClick={() => setShowForm(true)}
           />
-          {sites.map((site) => {
+          {sites?.map((site) => {
             return <ProductDetailCard onEdit={onEdit} site={site} />;
           })}
         </div>

@@ -1,16 +1,19 @@
-import { Dropdown } from "@/components/ui/Dropdown";
-import { InputField } from "@/components/ui/InputField";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { Dropdown } from '@/components/ui/Dropdown';
+import { InputField } from '@/components/ui/InputField';
+import { createBooking } from '@/services/api/booking-api';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 // Optional: Replace this with your actual countries import later
 const countries = [
-  { value: "US", label: "United States" },
-  { value: "CA", label: "Canada" },
-  { value: "GB", label: "United Kingdom" },
-  { value: "DE", label: "Germany" },
-  { value: "FR", label: "France" },
-  { value: "AU", label: "Australia" },
+  { value: 'US', label: 'United States' },
+  { value: 'CA', label: 'Canada' },
+  { value: 'GB', label: 'United Kingdom' },
+  { value: 'DE', label: 'Germany' },
+  { value: 'FR', label: 'France' },
+  { value: 'AU', label: 'Australia' },
+  // Add more as needed
 ];
 
 type FormData = {
@@ -31,10 +34,10 @@ const StepThree = () => {
     postalCode: "",
     billingPhone: "",
   });
-  const finalFormData = useSelector((state: any) => state.stepperSlice.data)
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
-    {}
-  );
+
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const prevFormData = useSelector((state) => state.stepperSlice.data);
+  const router = useRouter();
 
   const validateStepThree = (data: FormData) => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
@@ -44,12 +47,9 @@ const StepThree = () => {
     if (!data.country) newErrors.country = "Country is required";
     if (!data.state.trim()) newErrors.state = "State is required";
     if (!data.postalCode.trim()) {
-      newErrors.postalCode = "Postal/Zip code is required";
-    } else if (
-      !/^\d{5}(-\d{4})?$/.test(data.postalCode) &&
-      data.country === "US"
-    ) {
-      newErrors.postalCode = "Invalid US ZIP code";
+      newErrors.postalCode = 'Postal/Zip code is required';
+    } else if (!/^\d{5}(-\d{4})?$/.test(data.postalCode) ) {
+      newErrors.postalCode = 'Invalid US ZIP code';
     }
     if (!data.billingPhone.trim()) {
       newErrors.billingPhone = "Billing phone is required";
@@ -71,12 +71,14 @@ const StepThree = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validateStepThree(formData);
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length === 0) {
-      console.log("✅ Valid Form Data:", {...finalFormData,...formData});
+      console.log('✅ Valid Form Data:', {...prevFormData  ,address : formData});
+      const response = await createBooking({...prevFormData  ,address : formData});
+      router.push('/dashboard');
       // Proceed to next step or submit
     } else {
       console.log("❌ Validation failed");
@@ -148,9 +150,7 @@ const StepThree = () => {
             name="country"
             options={countries}
             value={formData.country}
-            onChange={(value) =>
-              handleChange({ target: { name: "country", value: value } })
-            }
+            onChange={(value)=>handleChange({target:{name:"country",value}})}
             className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
               errors.country ? "border-red-500" : "border-gray-300"
             }`}

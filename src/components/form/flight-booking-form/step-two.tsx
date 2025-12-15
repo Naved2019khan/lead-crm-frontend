@@ -64,8 +64,8 @@ const StepTwo: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(handleNext(formData))
-    console.log('✅ Valid Form Data:', formData);
+    dispatch(handleNext({trip : {...formData}}));
+    console.log('Form Data:', formData);
 
   };
 

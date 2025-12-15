@@ -1,7 +1,7 @@
+"use client"
 import { ArrowRight, Play, Sparkles } from 'lucide-react';
 
 export default function HeroSection() {
-
   return (
     <section className="relative bg-white overflow-hidden">
       {/* Decorative Elements */}
