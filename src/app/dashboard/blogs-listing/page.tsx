@@ -1,13 +1,14 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import { Search, Plus, Edit, Eye, Trash2, Filter, Calendar, User, Tag, FileText, CheckCircle, Clock, XCircle, Globe, ChevronDown } from 'lucide-react';
+"use client";
+import React, { useEffect, useState } from "react";
+import { Search, Plus, Edit, Eye, Trash2, Calendar, User, Tag, FileText, CheckCircle, Clock, XCircle, Globe, ChevronDown,
+} from "lucide-react";
 
-import { blogAPI } from '@/services/api/blog-api';
-import Link from 'next/link';
-import useOutsideClick from '@/hooks/useOutsideClick';
-import { productApi } from '@/services/api/product-api';
-import { localStorage } from '@/lib/storage/localStorage';
-import { STORAGE_KEYS } from '@/lib/storage/storageKeys';
+import { blogAPI } from "@/services/api/blog-api";
+import Link from "next/link";
+import useOutsideClick from "@/hooks/useOutsideClick";
+import { productApi } from "@/services/api/product-api";
+import { localStorage } from "@/lib/storage/localStorage";
+import { STORAGE_KEYS } from "@/lib/storage/storageKeys";
 
 export default function BlogListingPage() {
   const [blogs, setBlogs] = useState([]);
@@ -17,61 +18,68 @@ export default function BlogListingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const dropDownRef = React.useRef(null);
-
-  useOutsideClick(dropDownRef, () => setShowSiteDropdown(false));
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterCategory, setFilterCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterCategory, setFilterCategory] = useState("all");
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
 
   // Filter blogs by selected site with null checks
-  const siteBlogss = selectedSite && Array.isArray(blogs) 
-    ? blogs.filter(blog => blog?.siteId === selectedSite.siteId) 
-    : [];
-  
-  const categories = [...new Set(siteBlogss.map(blog => blog?.category).filter(Boolean))];
+  const siteBlogss =
+    selectedSite && Array.isArray(blogs)
+      ? blogs.filter((blog) => blog?.siteId === selectedSite.siteId)
+      : [];
 
-  const filteredBlogs = siteBlogss.filter(blog => {
+  const categories = [
+    ...new Set(siteBlogss.map((blog) => blog?.category).filter(Boolean)),
+  ];
+
+  const filteredBlogs = siteBlogss.filter((blog) => {
     if (!blog) return false;
-    
-    const matchesSearch = (blog.title?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (blog.author?.toLowerCase() || '').includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || blog.status === filterStatus;
-    const matchesCategory = filterCategory === 'all' || blog.category === filterCategory;
+
+    const matchesSearch =
+      (blog.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (blog.author?.toLowerCase() || "").includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      filterStatus === "all" || blog.status === filterStatus;
+    const matchesCategory =
+      filterCategory === "all" || blog.category === filterCategory;
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
   const getStatusBadge = (status) => {
     const styles = {
-      published: 'bg-emerald-500 text-white',
-      draft: 'bg-slate-500 text-white',
-      scheduled: 'bg-blue-500 text-white'
+      published: "bg-emerald-500 text-white",
+      draft: "bg-slate-500 text-white",
+      scheduled: "bg-blue-500 text-white",
     };
     const icons = {
       published: <CheckCircle size={14} />,
       draft: <FileText size={14} />,
-      scheduled: <Clock size={14} />
+      scheduled: <Clock size={14} />,
     };
     return (
-      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${styles[status] || 'bg-slate-500 text-white'}`}>
+      <span
+        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+          styles[status] || "bg-slate-500 text-white"
+        }`}
+      >
         {icons[status] || <FileText size={14} />}
-        {status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Unknown'}
+        {status ? status.charAt(0).toUpperCase() + status.slice(1) : "Unknown"}
       </span>
     );
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this blog post?')) {
+    if (window.confirm("Are you sure you want to delete this blog post?")) {
       try {
         // Add your delete API call here if needed
         // await blogAPI.delete(id);
-        setBlogs(blogs.filter(blog => blog.id !== id));
+        setBlogs(blogs.filter((blog) => blog.id !== id));
       } catch (error) {
-        console.error('Error deleting blog:', error);
-        alert('Failed to delete blog post. Please try again.');
+        console.error("Error deleting blog:", error);
+        alert("Failed to delete blog post. Please try again.");
       }
     }
   };
@@ -83,38 +91,58 @@ export default function BlogListingPage() {
 
   const stats = {
     total: siteBlogss.length,
-    published: siteBlogss.filter(b => b?.status === 'published').length,
-    draft: siteBlogss.filter(b => b?.status === 'draft').length,
-    scheduled: siteBlogss.filter(b => b?.status === 'scheduled').length
+    published: siteBlogss.filter((b) => b?.status === "published").length,
+    draft: siteBlogss.filter((b) => b?.status === "draft").length,
+    scheduled: siteBlogss.filter((b) => b?.status === "scheduled").length,
   };
 
-  const getSiteColorClass = (color = null, type = 'bg', index) => {
+  const getSiteColorClass = (color = null, type = "bg", index) => {
     const colors = {
-      0: type === 'bg' ? 'bg-blue-500' : type === 'text' ? 'text-blue-600' : 'border-blue-500',
-      1: type === 'bg' ? 'bg-purple-500' : type === 'text' ? 'text-purple-600' : 'border-purple-500',
-      2: type === 'bg' ? 'bg-emerald-500' : type === 'text' ? 'text-emerald-600' : 'border-emerald-500',
-      3: type === 'bg' ? 'bg-orange-500' : type === 'text' ? 'text-orange-600' : 'border-orange-500'
+      0:
+        type === "bg"
+          ? "bg-blue-500"
+          : type === "text"
+          ? "text-blue-600"
+          : "border-blue-500",
+      1:
+        type === "bg"
+          ? "bg-purple-500"
+          : type === "text"
+          ? "text-purple-600"
+          : "border-purple-500",
+      2:
+        type === "bg"
+          ? "bg-emerald-500"
+          : type === "text"
+          ? "text-emerald-600"
+          : "border-emerald-500",
+      3:
+        type === "bg"
+          ? "bg-orange-500"
+          : type === "text"
+          ? "text-orange-600"
+          : "border-orange-500",
     };
     return colors[index % 4] || colors[0];
   };
 
   const fetchBlogs = async () => {
     if (!selectedSite?.siteId) return;
-    
+
     try {
       setLoading(true);
       setError(null);
       const response = await blogAPI.getAll(selectedSite.siteId);
-      
+
       if (response?.data && Array.isArray(response.data)) {
         setBlogs(response.data);
       } else {
         setBlogs([]);
-        console.warn('Unexpected API response format:', response);
+        console.warn("Unexpected API response format:", response);
       }
     } catch (error) {
-      console.error('Error fetching blogs:', error);
-      setError('Failed to load blogs. Please try again later.');
+      console.error("Error fetching blogs:", error);
+      setError("Failed to load blogs. Please try again later.");
       setBlogs([]);
     } finally {
       setLoading(false);
@@ -126,24 +154,30 @@ export default function BlogListingPage() {
       setLoading(true);
       setError(null);
       const response = await productApi.getAllProducts();
-      
+
       if (response?.combined && Array.isArray(response.combined)) {
         setSites(response.combined);
         if (response.combined.length > 0) {
-          setSelectedSite(JSON.parse(localStorage.get(STORAGE_KEYS.BLOG_PREFERENCES)) || response.combined[0]);
+          setSelectedSite(
+            JSON.parse(localStorage.get(STORAGE_KEYS.BLOG_PREFERENCES)) ||
+              response.combined[0]
+          );
         }
       } else {
         setSites([]);
-        setError('No sites available.');
+
+        setError("No sites available.");
       }
     } catch (error) {
-      console.error('Error fetching sites:', error);
-      setError('Failed to load sites. Please try again later.');
+      console.error("Error fetching sites:", error);
+      setError("Failed to load sites. Please try again later.");
       setSites([]);
     } finally {
       setLoading(false);
     }
   };
+
+  useOutsideClick(dropDownRef, () => setShowSiteDropdown(false));
 
   useEffect(() => {
     if (!selectedSite) return;
@@ -174,7 +208,9 @@ export default function BlogListingPage() {
           <div className="inline-flex p-4 bg-red-100 rounded-full mb-4">
             <XCircle size={48} className="text-red-600" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">Error Loading Data</h3>
+          <h3 className="text-xl font-bold text-slate-900 mb-2">
+            Error Loading Data
+          </h3>
           <p className="text-slate-600 mb-4">{error}</p>
           <button
             onClick={() => fetchSiteId()}
@@ -194,11 +230,15 @@ export default function BlogListingPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900 mb-2">Blog Management</h1>
-              <p className="text-slate-600 text-lg">Manage and organize your blog posts</p>
+              <h1 className="text-4xl font-bold text-slate-900 mb-2">
+                Blog Management
+              </h1>
+              <p className="text-slate-600 text-lg">
+                Manage and organize your blog posts
+              </p>
             </div>
             <Link
-              href={`/dashboard/blogs-editor/${selectedSite?.siteId || ''}`}
+              href={`/dashboard/blogs-editor/${selectedSite?.siteId || ""}`}
               className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold shadow-lg hover:shadow-xl"
             >
               <Plus size={20} />
@@ -212,15 +252,31 @@ export default function BlogListingPage() {
               <div ref={dropDownRef}>
                 <button
                   onClick={() => setShowSiteDropdown(!showSiteDropdown)}
-                  className={`flex items-center gap-3 px-6 py-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border-2 ${getSiteColorClass(null, 'border', selectedSite?.siteId || 0)} w-full md:w-auto`}
+                  className={`flex items-center gap-3 px-6 py-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border-2 ${getSiteColorClass(
+                    null,
+                    "border",
+                    selectedSite?.siteId || 0
+                  )} w-full md:w-auto`}
                 >
-                  <div className={`p-2 ${getSiteColorClass(null, 'bg', selectedSite?.siteId || 0)} bg-opacity-10 rounded-xl`}>
+                  <div
+                    className={`p-2 ${getSiteColorClass(
+                      null,
+                      "bg",
+                      selectedSite?.siteId || 0
+                    )} bg-opacity-10 rounded-xl`}
+                  >
                     <Globe className="text-white" size={24} />
                   </div>
                   <div className="text-left flex-1">
-                    <p className="text-sm font-medium text-slate-500">Current Site</p>
-                    <p className="text-lg font-bold text-slate-900">{selectedSite?.siteName || 'No Site Selected'}</p>
-                    <p className="text-xs text-slate-500">{selectedSite?.siteDomain || ''}</p>
+                    <p className="text-sm font-medium text-slate-500">
+                      Current Site
+                    </p>
+                    <p className="text-lg font-bold text-slate-900">
+                      {selectedSite?.siteName || "No Site Selected"}
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      {selectedSite?.siteDomain || ""}
+                    </p>
                   </div>
                   <ChevronDown size={20} className="text-slate-400" />
                 </button>
@@ -232,25 +288,47 @@ export default function BlogListingPage() {
                         key={site?.siteId || idx}
                         onClick={() => {
                           setSelectedSite(site);
-                          localStorage.set(STORAGE_KEYS.BLOG_PREFERENCES, JSON.stringify(site));
+                          localStorage.set(
+                            STORAGE_KEYS.BLOG_PREFERENCES,
+                            JSON.stringify(site)
+                          );
                           setShowSiteDropdown(false);
-                          setFilterStatus('all');
-                          setFilterCategory('all');
-                          setSearchTerm('');
+                          setFilterStatus("all");
+                          setFilterCategory("all");
+                          setSearchTerm("");
                         }}
                         className={`flex items-center gap-3 px-6 py-4 w-full hover:bg-slate-50 transition-all ${
-                          selectedSite?.siteId === site?.siteId ? 'bg-slate-50' : ''
+                          selectedSite?.siteId === site?.siteId
+                            ? "bg-slate-50"
+                            : ""
                         }`}
                       >
-                        <div className={`p-2 ${getSiteColorClass(site?.color, 'bg', site?.siteId || idx)} bg-opacity-10 rounded-xl`}>
+                        <div
+                          className={`p-2 ${getSiteColorClass(
+                            site?.color,
+                            "bg",
+                            site?.siteId || idx
+                          )} bg-opacity-10 rounded-xl`}
+                        >
                           <Globe className="text-white" size={20} />
                         </div>
                         <div className="text-left flex-1">
-                          <p className="text-base font-bold text-slate-900">{site?.siteName || 'Unknown Site'}</p>
-                          <p className="text-sm text-slate-500">{site?.siteDomain || ''}</p>
+                          <p className="text-base font-bold text-slate-900">
+                            {site?.siteName || "Unknown Site"}
+                          </p>
+                          <p className="text-sm text-slate-500">
+                            {site?.siteDomain || ""}
+                          </p>
                         </div>
                         {selectedSite?.siteId === site?.siteId && (
-                          <CheckCircle className={getSiteColorClass(site?.color, 'text', site?.siteId || idx)} size={20} />
+                          <CheckCircle
+                            className={getSiteColorClass(
+                              site?.color,
+                              "text",
+                              site?.siteId || idx
+                            )}
+                            size={20}
+                          />
                         )}
                       </button>
                     ))}
@@ -265,8 +343,12 @@ export default function BlogListingPage() {
             <div className="bg-white rounded-2xl shadow-sm p-6 border-2 border-slate-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-500 mb-1">Total Posts</p>
-                  <p className="text-3xl font-bold text-slate-900">{stats.total}</p>
+                  <p className="text-sm font-medium text-slate-500 mb-1">
+                    Total Posts
+                  </p>
+                  <p className="text-3xl font-bold text-slate-900">
+                    {stats.total}
+                  </p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-xl">
                   <FileText className="text-blue-600" size={28} />
@@ -276,8 +358,12 @@ export default function BlogListingPage() {
             <div className="bg-white rounded-2xl shadow-sm p-6 border-2 border-slate-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-500 mb-1">Published</p>
-                  <p className="text-3xl font-bold text-slate-900">{stats.published}</p>
+                  <p className="text-sm font-medium text-slate-500 mb-1">
+                    Published
+                  </p>
+                  <p className="text-3xl font-bold text-slate-900">
+                    {stats.published}
+                  </p>
                 </div>
                 <div className="p-3 bg-emerald-100 rounded-xl">
                   <CheckCircle className="text-emerald-600" size={28} />
@@ -287,8 +373,12 @@ export default function BlogListingPage() {
             <div className="bg-white rounded-2xl shadow-sm p-6 border-2 border-slate-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-500 mb-1">Drafts</p>
-                  <p className="text-3xl font-bold text-slate-900">{stats.draft}</p>
+                  <p className="text-sm font-medium text-slate-500 mb-1">
+                    Drafts
+                  </p>
+                  <p className="text-3xl font-bold text-slate-900">
+                    {stats.draft}
+                  </p>
                 </div>
                 <div className="p-3 bg-slate-100 rounded-xl">
                   <FileText className="text-slate-600" size={28} />
@@ -298,8 +388,12 @@ export default function BlogListingPage() {
             <div className="bg-white rounded-2xl shadow-sm p-6 border-2 border-slate-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-500 mb-1">Scheduled</p>
-                  <p className="text-3xl font-bold text-slate-900">{stats.scheduled}</p>
+                  <p className="text-sm font-medium text-slate-500 mb-1">
+                    Scheduled
+                  </p>
+                  <p className="text-3xl font-bold text-slate-900">
+                    {stats.scheduled}
+                  </p>
                 </div>
                 <div className="p-3 bg-amber-100 rounded-xl">
                   <Clock className="text-amber-600" size={28} />
@@ -313,7 +407,10 @@ export default function BlogListingPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="md:col-span-2">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                  <Search
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"
+                    size={20}
+                  />
                   <input
                     type="text"
                     placeholder="Search by title or author..."
@@ -343,7 +440,9 @@ export default function BlogListingPage() {
                 >
                   <option value="all">All Categories</option>
                   {categories.map((cat, idx) => (
-                    <option key={cat || idx} value={cat}>{cat}</option>
+                    <option key={cat || idx} value={cat}>
+                      {cat}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -365,7 +464,9 @@ export default function BlogListingPage() {
             <div className="inline-flex p-4 bg-red-100 rounded-full mb-4">
               <XCircle size={48} className="text-red-600" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Error Loading Blogs</h3>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">
+              Error Loading Blogs
+            </h3>
             <p className="text-slate-600 mb-4">{error}</p>
             <button
               onClick={() => fetchBlogs()}
@@ -384,22 +485,30 @@ export default function BlogListingPage() {
                 <div className="inline-flex p-4 bg-slate-100 rounded-full mb-4">
                   <FileText size={48} className="text-slate-400" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">No blog posts found</h3>
-                <p className="text-slate-600">Try adjusting your search or filters</p>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">
+                  No blog posts found
+                </h3>
+                <p className="text-slate-600">
+                  Try adjusting your search or filters
+                </p>
               </div>
             ) : (
               filteredBlogs.map((blog, idx) => (
-                <div key={blog?.id || blog?._id || idx} className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all overflow-hidden border-2 border-slate-100">
+                <div
+                  key={blog?.id || blog?._id || idx}
+                  className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all overflow-hidden border-2 border-slate-100"
+                >
                   <div className="flex flex-col md:flex-row">
                     {/* Featured Image */}
                     <div className="md:w-72 h-48 md:h-auto bg-slate-200 flex-shrink-0">
                       {blog?.featuredImage ? (
                         <img
                           src={blog.featuredImage}
-                          alt={blog?.title || 'Blog image'}
+                          alt={blog?.title || "Blog image"}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23e2e8f0" width="100" height="100"/%3E%3C/svg%3E';
+                            e.target.src =
+                              'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23e2e8f0" width="100" height="100"/%3E%3C/svg%3E';
                           }}
                         />
                       ) : (
@@ -414,10 +523,14 @@ export default function BlogListingPage() {
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-3">
-                            <h2 className="text-2xl font-bold text-slate-900">{blog?.title || 'Untitled'}</h2>
+                            <h2 className="text-2xl font-bold text-slate-900">
+                              {blog?.title || "Untitled"}
+                            </h2>
                             {getStatusBadge(blog?.status)}
                           </div>
-                          <p className="text-slate-600 text-base mb-4 leading-relaxed">{blog?.excerpt || 'No excerpt available'}</p>
+                          <p className="text-slate-600 text-base mb-4 leading-relaxed">
+                            {blog?.excerpt || "No excerpt available"}
+                          </p>
                           <div className="flex flex-wrap gap-5 text-sm text-slate-500 font-medium">
                             {blog?.author && (
                               <span className="flex items-center gap-2">
@@ -438,7 +551,10 @@ export default function BlogListingPage() {
                             {blog?.createdAt && (
                               <span className="flex items-center gap-2">
                                 <div className="p-1.5 bg-indigo-100 rounded-lg">
-                                  <Calendar size={14} className="text-indigo-600" />
+                                  <Calendar
+                                    size={14}
+                                    className="text-indigo-600"
+                                  />
                                 </div>
                                 {new Date(blog.createdAt).toLocaleDateString()}
                               </span>
@@ -463,7 +579,9 @@ export default function BlogListingPage() {
                           Preview
                         </button>
                         <Link
-                          href={`/dashboard/blogs-editor/${selectedSite?.siteId || ''}?id=${blog?._id || blog?.id || ''}`}
+                          href={`/dashboard/blogs-editor/${
+                            selectedSite?.siteId || ""
+                          }?id=${blog?._id || blog?.id || ""}`}
                           className="flex items-center gap-2 px-5 py-2.5 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all font-semibold"
                         >
                           <Edit size={16} />
@@ -490,7 +608,9 @@ export default function BlogListingPage() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <div className="sticky top-0 bg-white border-b-2 border-slate-100 p-5 flex items-center justify-between rounded-t-2xl">
-                <h3 className="text-2xl font-bold text-slate-900">Blog Preview</h3>
+                <h3 className="text-2xl font-bold text-slate-900">
+                  Blog Preview
+                </h3>
                 <button
                   onClick={() => setShowPreview(false)}
                   className="p-2 hover:bg-slate-100 rounded-xl transition-all"
@@ -502,15 +622,17 @@ export default function BlogListingPage() {
                 {selectedBlog?.featuredImage && (
                   <img
                     src={selectedBlog.featuredImage}
-                    alt={selectedBlog?.title || 'Blog image'}
+                    alt={selectedBlog?.title || "Blog image"}
                     className="w-full h-72 object-cover rounded-2xl mb-6"
                     onError={(e) => {
-                      e.target.style.display = 'none';
+                      e.target.style.display = "none";
                     }}
                   />
                 )}
                 <div className="flex items-center gap-3 mb-4">
-                  <h1 className="text-4xl font-bold flex-1 text-slate-900">{selectedBlog?.title || 'Untitled'}</h1>
+                  <h1 className="text-4xl font-bold flex-1 text-slate-900">
+                    {selectedBlog?.title || "Untitled"}
+                  </h1>
                   {getStatusBadge(selectedBlog?.status)}
                 </div>
                 <div className="flex gap-5 text-sm text-slate-600 mb-6 pb-6 border-b-2 border-slate-100 font-medium">
@@ -534,22 +656,33 @@ export default function BlogListingPage() {
                   )}
                 </div>
                 <div className="prose max-w-none">
-                  <p className="text-lg text-slate-700 leading-relaxed mb-4">{selectedBlog?.excerpt || 'No excerpt available'}</p>
+                  <p className="text-lg text-slate-700 leading-relaxed mb-4">
+                    {selectedBlog?.excerpt || "No excerpt available"}
+                  </p>
                   <p className="text-slate-600 leading-relaxed">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris.
                   </p>
                 </div>
                 {(selectedBlog?.metaDescription || selectedBlog?.slug) && (
                   <div className="mt-6 pt-6 border-t-2 border-slate-100 bg-slate-50 rounded-xl p-5">
-                    <h4 className="font-bold text-slate-900 mb-3 text-lg">SEO Information</h4>
+                    <h4 className="font-bold text-slate-900 mb-3 text-lg">
+                      SEO Information
+                    </h4>
                     {selectedBlog?.metaDescription && (
                       <p className="text-sm text-slate-700 mb-2">
-                        <strong className="text-slate-900">Meta Description:</strong> {selectedBlog.metaDescription}
+                        <strong className="text-slate-900">
+                          Meta Description:
+                        </strong>{" "}
+                        {selectedBlog.metaDescription}
                       </p>
                     )}
                     {selectedBlog?.slug && (
                       <p className="text-sm text-slate-700">
-                        <strong className="text-slate-900">URL:</strong> /blog/{selectedBlog.slug}
+                        <strong className="text-slate-900">URL:</strong> /blog/
+                        {selectedBlog.slug}
                       </p>
                     )}
                   </div>
@@ -565,7 +698,7 @@ export default function BlogListingPage() {
             <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
               <div className="sticky top-0 bg-white border-b-2 border-slate-100 p-5 flex items-center justify-between rounded-t-2xl">
                 <h3 className="text-2xl font-bold text-slate-900">
-                  {selectedBlog ? 'Edit Blog Post' : 'Create New Blog Post'}
+                  {selectedBlog ? "Edit Blog Post" : "Create New Blog Post"}
                 </h3>
                 <button
                   onClick={() => {
@@ -579,12 +712,17 @@ export default function BlogListingPage() {
               </div>
               <div className="p-8">
                 <p className="text-center text-slate-600 text-lg">
-                  Editor component would be loaded here with blog data pre-filled for editing.
+                  Editor component would be loaded here with blog data
+                  pre-filled for editing.
                 </p>
                 {selectedBlog && (
                   <div className="mt-6 p-5 bg-blue-50 rounded-xl border-2 border-blue-100">
-                    <p className="text-sm font-bold text-blue-900 mb-1">Editing:</p>
-                    <p className="text-base text-blue-800 font-medium">{selectedBlog?.title || 'Untitled'}</p>
+                    <p className="text-sm font-bold text-blue-900 mb-1">
+                      Editing:
+                    </p>
+                    <p className="text-base text-blue-800 font-medium">
+                      {selectedBlog?.title || "Untitled"}
+                    </p>
                   </div>
                 )}
               </div>

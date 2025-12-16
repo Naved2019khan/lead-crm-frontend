@@ -2,6 +2,8 @@
 import React, { useState, useRef } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 import useOutsideClick from '@/hooks/useOutsideClick';
+import { Modal } from './Modal';
+import { ModalPopup } from './ModalPopup';
 
 export const Dropdown = ({ options,label, value, onChange, placeholder = "Select an option" }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,8 +29,8 @@ export const Dropdown = ({ options,label, value, onChange, placeholder = "Select
         />
       </button>
 
-      {isOpen && (
-        <div className="absolute z-10 bg-white w-full mt-2 border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+      <ModalPopup isOpen={isOpen} onClose={() => setIsOpen(false)} title={label} >
+        <div className="absolute z-10 bg-white w-fit mt-2 border border-gray-200 rounded-lg shadow-lg overflow-hidden">
           <div className="max-h-60 overflow-y-auto">
             {options.map((option) => (
               <button
@@ -40,7 +42,7 @@ export const Dropdown = ({ options,label, value, onChange, placeholder = "Select
                 }}
                 className="w-full px-4 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-center justify-between group"
               >
-                <span className={option.value === value ? "text-gray-600 font-medium" : "text-gray-700"}>
+                <span className={option.value === value ? "text-gray-600 font-bold" : " text-gray-700" + " whitespace-nowrap"}>
                   {option.label}
                 </span>
                 {option.value === value && (
@@ -50,7 +52,8 @@ export const Dropdown = ({ options,label, value, onChange, placeholder = "Select
             ))}
           </div>
         </div>
-      )}
+        </ModalPopup>
+      
     </div>
   );
 };

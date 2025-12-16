@@ -4,13 +4,14 @@ import { useState, useMemo, useEffect } from 'react';
 import { PaxPopup } from "./PaxPopup";
 import BookingListing from '../BookingListing';
 import { toast } from 'sonner';
+import { getManualBookings } from '@/services/api/booking-api';
 
 
-const FlightBooking = ({ bookingResponse = flights }: { bookingResponse: any }) => {
+const FlightBooking = ({  }: { }) => {
     const [search, setSearch] = useState('');
     const [sortKey, setSortKey] = useState(null);
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
-    const [paxDetailSelected, setPaxDetailSelected] = useState(null)
+    const [bookingResponse,setBookingResponse] = useState([])
 
     const filtered = useMemo(() => {
         if (!bookingResponse) return []
@@ -49,46 +50,29 @@ const FlightBooking = ({ bookingResponse = flights }: { bookingResponse: any }) 
         }
     };
 
-    // PopUp
-    const handlePaxSelectionPopup = (items: any) => {
-        setPaxDetailSelected(items)
-    }
-
-    const handleClosePax = () => {
-        setPaxDetailSelected(null)
-    }
-
-    // detail page navigation
-    const handleDetailPage = (id: string, item: any) => {
-        // router.push(`/crm-dashboard/flight-booking/flight-detail/${id}?flightData=${JSON.stringify(item)}`)
-    }
-    const handleSaveBookingStatus = async (value: string, orderId: string) => {
-        // const response = await updateBookingStatus({orderId, bookingStatus : value })
-        // if(response.status){
-        //   toast(response.message)
-        // }
-        // else{
-        //   toast(response)
-        // }
+    async function fetchAllBookings() {
+        const response = await getManualBookings()
+        setBookingResponse(response.data)
+        console.log(response.data)
+        toast.success('Flight Booking Loaded Successfully');
     }
 
 
     useEffect(() => {
-        toast.success('Flight Booking Loaded Successfully');
+        fetchAllBookings()
     }, []);
 
 
-
     return (
-        <div className="w-full mt-8 ">
+        <div className="w-full mt-8 mx-5">
             {/* Search */}
-            <PaxPopup isOpen={!!paxDetailSelected} paxDetail={paxDetailSelected} onClose={handleClosePax} />
-            <div className="hidden md:block overflow-x-auto rounded-lg shadow">
-                <table className="max-w-full bg-white ">
-                    <thead className="bg-gradient-to-r from-green-600 via-green-500 to-green-600  text-white">
+            {/* <PaxPopup isOpen={!!paxDetailSelected} paxDetail={paxDetailSelected} onClose={handleClosePax} /> */}
+            <div className="hidden md:block overflow-x-auto rounded-lg shadow h-[calc(80ch-2rem)]">
+                <table className="w-full bg-white ">
+                    <thead className="bg-gradient-to-r w-full  from-gray-600 via-gray-400 to-gray-600  text-white">
                         <tr>
                             {[
-                                { key: 'Action', label: 'Action' },
+                                { key: 'Status', label: 'Status' },
                                 { key: 'viewDetail', label: 'View Detail' },
                                 { key: 'paxDetail', label: 'Pax Detail' },
                                 { key: 'OrderDetail', label: 'Order Detail' },
@@ -96,7 +80,7 @@ const FlightBooking = ({ bookingResponse = flights }: { bookingResponse: any }) 
                                 { key: 'FlightDetail', label: 'Flight Detail' },
                                 { key: 'JourneyDetail', label: 'Journey Detail' },
                                 { key: 'price', label: 'Price' },
-                                { key: 'paymentStatus', label: 'Payment Status' },
+                                // { key: 'paymentStatus', label: 'Payment Status' },
                                 // { key: 'bookingStatus', label: 'Booking Status' },
                                 // { key: 'status', label: 'Status' },
                             ].map(({ key, label }) => (
@@ -114,16 +98,13 @@ const FlightBooking = ({ bookingResponse = flights }: { bookingResponse: any }) 
                         </tr>
                     </thead>
                     <tbody className="divide-y font-mono divide-emerald-100 ">
-                        {filtered.map((f: any, index: number) => {
-                            if (!f?.flightInfo) return null
+                        {filtered.map((flight: any, index: number) => {
+                            if (!flight) return null
                             return (
                                 <BookingListing
-                                    key={f.id}
-                                    f={f}
-                                    index={index}
-                                    handlePaxSelectionPopup={handlePaxSelectionPopup}
-                                    onChange={handleSaveBookingStatus}
-                                    handleDetailPage={handleDetailPage} />
+                                    key={flight._id}
+                                    flight={flight}
+                                    />
                             )
                         })}
                     </tbody>

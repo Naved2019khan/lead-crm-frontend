@@ -2,79 +2,73 @@ import { getAirlineData, getAirportName, getStopCount } from "@/utils/flights/fi
 import { Dropdown } from "../ui/Dropdown";
 import { differenceOfTiming, getDateReadableFormate, getTimeReadableFormate } from "@/utils/dates";
 import Link from "next/link";
+import { useState } from "react";
+import { TRAVEL_CLASS } from "@/constants/flight-constants";
+import { updateBooking } from "@/services/api/booking-api";
+import { toast } from "sonner";
 
-
-const BookingOption = [
+const BOOKING_OPTION = [
   {
-    label: "Confirmed",
-    value: "Confirmed",
+    label: "Pending",
+    value: "pending",
+  },
+  {
+    label: "Payment Done",
+    value: "payment-done",
+  },
+  {
+    label: "Pnr Generated",
+    value: "pnr-generated",
+  },
+  {
+    label: "Ticked Received",
+    value: "ticked-received",
+  },
+  {
+    label: "Close",
+    value: "close",
   },
   {
     label: "Cancelled",
-    value: "Cancelled",
-  },
-  {
-    label: "Reject",
-    value: "Reject",
-  },
-  {
-    label: "Pending",
-    value: "Pending",
-  },
-  {
-    label: "Ready",
-    value: "Ready",
+    value: "cancelled",
   },
 ];
  
-const BookingListing = ({ f, handlePaxSelectionPopup,handleDetailPage , onChange }: { f: any }) => {
-  const {
-    airlineName,
-    fromAiportName,
-    toAiportName,
-    stopCount,
-    flightNumber,
-    cabin,
-    isRoundTrip,
-  } = getFlightInfo(f?.flightInfo);
-  const {
-    departureAirportCode,
-    arrivalAirportCode,
-    departureDateTime,
-    arrivalDateTime,
-    departureTiming,
-    arrivalTiming,
-    estTime,
-  } = getJourneyInfo(f?.flightInfo);
+const BookingListing = ({ flight }: { flight: any }) => {
+  const [bookingStatus,setBookingStatus] = useState(flight?.bookingStatus)
+
+  async function updateBookingStatus(value : string) {
+    setBookingStatus(value)
+    const res = await updateBooking({status : value , _id : flight._id})
+    console.log(res,"DDD")
+    if(res.success){
+      toast.success('Status Updated Successfully');
+    }
+  }
 
   return (
-    <tr key={f?.orderId} className="hover:bg-emerald-50 max-h-[100px]">
+    <tr className="hover:bg-emerald-50 max-h-[100px]">
        <td className="px-2 py-3 ">
         <div className="w-36 px-2">
-          <Dropdown onChange={(value)=>{onChange(value,f?.orderId)}} value={f?.bookingStatus} options={BookingOption} />
+          <Dropdown onChange={(value)=>updateBookingStatus(value)} value={bookingStatus} options={BOOKING_OPTION} />
         </div>
       </td>
       <td className="px-4 py-6"> 
-        <Link href={`manual-booking/${f?.orderId}`}
-          
-          className="text-sm  bg-green-600 shadow-2xl text-white  hover:bg-green-900   px-4 py-2 rounded-md"
-        >
+        <Link href={`manual-booking/${flight._id}`}
+          className="text-sm  bg-green-600 shadow-2xl text-white  hover:bg-green-900   px-4 py-2 rounded-md">
           View
         </Link>
       </td>
       <td>
-        <div
-          // onClick={() => handlePaxSelectionPopup()}
-          className="relative whitespace-nowrap  py-2 text-center rounded-xl bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
-        >
+        <div className="relative whitespace-nowrap  py-2 text-center rounded-xl bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors">
           <div className="flex items-center gap-2 justify-center">
             <span className="text-sm text-gray-700">
-              {(f?.metaData?.passangerInfo?.[0]?.firstName || "X") +
+              {(flight?.passengers?.[0]?.firstName || "X") +
                 " " +
-                (f?.metaData?.passangerInfo?.[0]?.lastName || "")}
+                (flight?.passengers?.[0]?.lastName || "")}
             </span>
             <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 bg-gray-200 text-gray-800 text-sm font-semibold rounded-full">
-              {f?.metaData?.passangerInfo?.length}
+              {flight?.passengers?.length}
             </span>
           </div>
         </div>
@@ -83,30 +77,31 @@ const BookingListing = ({ f, handlePaxSelectionPopup,handleDetailPage , onChange
       <td className="px-4 py-3">
         <div className="space-y-1.5">
           <div className="flex items-center gap-1.5">
-            <span className={bookingStatus(f.bookingStatus)}>
+            {/* <span className={bookingStatus(f.bookingStatus)}>
               {f.bookingStatus}
-            </span>
+            </span> */}
           </div>
 
-          <div className="text-xs text-gray-500">{f?.orderId || "N/A"}</div>
+          <div className="text-xs text-gray-500">{flight?._id || "N/A"}</div>
         </div>
       </td>
 
       {/* FlightDetail */}
-      <td className="px-4 py-6">{f.pnr || "N/A"}</td>
+      <td className="px-4 py-6">{flight?.pnr || "N/A"}</td>
+     
       <td className="px-4 py-3">
         <div className="bg-slate-50 rounded-lg p-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
-                {isRoundTrip ? "Round Trip" : "One Way"}
+                {flight?.trip?.tripType ? "Round Trip" : "One Way"}
               </span>
-              <span className="text-xs text-slate-500">{cabin}</span>
+              <span className="text-xs text-slate-500">{TRAVEL_CLASS [flight?.trip?.cabinClass]}</span>
             </div>
 
             <div className="flex items-center gap-3 flex-1 justify-center">
               <span className="text-base font-bold text-gray-800">
-                {departureAirportCode}
+                {flight?.trip?.from}
               </span>
               <svg
                 className="w-4 h-4 text-gray-400"
@@ -114,6 +109,7 @@ const BookingListing = ({ f, handlePaxSelectionPopup,handleDetailPage , onChange
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
+
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -122,16 +118,16 @@ const BookingListing = ({ f, handlePaxSelectionPopup,handleDetailPage , onChange
                 />
               </svg>
               <span className="text-base font-bold text-gray-800">
-                {arrivalAirportCode}
+                 {flight?.trip?.to}
               </span>
             </div>
 
             <div className="flex items-center gap-2 text-sm">
               <span className="text-gray-700">
-                {airlineName || "Airline Name"}
+                {flight?.trip?.airline || "Airline Name"}
               </span>
               <span className="text-gray-400">•</span>
-              <span className="text-gray-600 font-mono">{flightNumber}</span>
+              <span className="text-gray-600 font-mono">{flight?.trip?.airlineNo}</span>
             </div>
           </div>
         </div>
@@ -143,41 +139,33 @@ const BookingListing = ({ f, handlePaxSelectionPopup,handleDetailPage , onChange
             <div className="flex flex-col">
               <span className="text-xs text-gray-500">Departure</span>
               <span className="text-sm font-semibold text-gray-800 whitespace-nowrap">
-                {departureDateTime}
+                {flight?.trip?.depDate}
               </span>
-              <span className="text-xs text-gray-600">{departureTiming}</span>
+              <span className="text-xs text-gray-600">{flight?.trip?.depDate}</span>
             </div>
 
             <div className="flex flex-col items-center px-2">
               <span className="text-xs text-gray-500">Duration</span>
               <span className="text-sm font-medium text-blue-600">
-                {estTime}
+                {/* {estTime} */}
               </span>
             </div>
 
             <div className="flex flex-col">
               <span className="text-xs text-gray-500">Arrival</span>
-              <span className="text-sm font-semibold text-gray-800 whitespace-nowrap">
+              {/* <span className="text-sm font-semibold text-gray-800 whitespace-nowrap">
                 {arrivalDateTime}
               </span>
-              <span className="text-xs text-gray-600">{arrivalTiming}</span>
+              <span className="text-xs text-gray-600">{arrivalTiming}</span> */}
             </div>
           </div>
         </div>
       </td>
+
       <td className="px-4 py-3 font-semibold whitespace-nowrap">
-        {f?.transactions?.orderCurrency || ""} {f.transactions?.orderAmount}
+        {flight?.totalPrice || ""} 
       </td>
-      <td className="px-4 py-3">{f?.paymentStatus}</td>
-      {/* <td className="px-4 py-3 font-semibold">
-                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor(f.status)}`}>
-                    {f.status}
-                  </span>
-                
-                  {f.bookingStatus}
-                  </td> */}
-     
+      <td className="px-4 py-3"></td>     
     </tr>
   );
 };

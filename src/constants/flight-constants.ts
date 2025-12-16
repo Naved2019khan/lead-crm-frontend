@@ -1,0 +1,1 @@
+export const TRAVEL_CLASS = ["Economy", "Premium Economy", "Business", "First Class"];

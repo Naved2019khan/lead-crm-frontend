@@ -4,6 +4,7 @@ import { createBooking } from '@/services/api/booking-api';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from 'sonner';
 
 // Optional: Replace this with your actual countries import later
 const countries = [
@@ -78,10 +79,10 @@ const StepThree = () => {
     if (Object.keys(validationErrors).length === 0) {
       console.log('✅ Valid Form Data:', {...prevFormData  ,address : formData});
       const response = await createBooking({...prevFormData  ,address : formData});
-      router.push('/dashboard');
-      // Proceed to next step or submit
+      toast.success('Flight Booking Created Successfully');
+      router.push('/manual-booking');
     } else {
-      console.log("❌ Validation failed");
+      // console.log("❌ Validation failed");
     }
   };
 
