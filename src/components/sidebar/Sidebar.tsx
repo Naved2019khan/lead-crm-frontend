@@ -11,11 +11,15 @@ interface NavItemProps {
   onClick?: () => void;
 }
 
- const NavItem = ({ item, onClick }: NavItemProps) => {
-   const [activeItem, setActiveItem] = useState('/dashboard');
+ const NavItem = ({ item }: NavItemProps) => {
+  const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState(['reports']);
+  const hasChildren = item.children && item.children.length > 0;
+  const isExpanded = expandedItems.includes(item.name.toLowerCase());
+  const parentActive = isParentActive(item);
+  function isActive(href : string) { return pathname  === href};
 
-   const toggleExpanded = (itemName) => {
+   const toggleExpanded = (itemName : string) => {
     setExpandedItems((prev) =>
       prev.includes(itemName)
         ? prev.filter((name) => name !== itemName)
@@ -23,9 +27,8 @@ interface NavItemProps {
     );
   };
 
-  const isActive = (href) => activeItem === href;
   
-  const isParentActive = (item) => {
+  function isParentActive(item : NavItem) {
     if (isActive(item.href)) return true;
     if (item.children) {
       return item.children.some((child) => isActive(child.href));
@@ -33,34 +36,25 @@ interface NavItemProps {
     return false;
   };
 
-  const handleClick = (e, href, item) => {
-    // e.preventDefault();
-    
-    if (item.children) {
+  const handleClick = (e : React.MouseEvent, href : string, item : NavItem) => {
+    if(hasChildren) {
       toggleExpanded(item.name.toLowerCase());
-    } else {
-      setActiveItem(href);
+      return e.preventDefault();
     }
-      setActiveItem(href);
   };
 
-
-  const hasChildren = item.children && item.children.length > 0;
-          const isExpanded = expandedItems.includes(item.name.toLowerCase());
-          const parentActive = isParentActive(item);
-
-          return (
+  return (
             <div key={item.name}>
               {/* Parent Item */}
               <Link
-                href={item.href}
+                href={item?.href}
                 onClick={(e) => handleClick(e, item.href, item)}
                 className={`
                   flex items-center justify-between gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all
                   ${
                     parentActive
                       ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   }
                 `}
               >
@@ -84,13 +78,9 @@ interface NavItemProps {
               {hasChildren && isExpanded && (
                 <div className="mt-1 ml-8 space-y-1">
                   {item.children.map((child) => (
-                    <a
+                    <Link
                       key={child.name}
                       href={child.href}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setActiveItem(child.href);
-                      }}
                       className={`
                         flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all
                         ${
@@ -104,7 +94,7 @@ interface NavItemProps {
                         {child.icon}
                       </span>
                       <span>{child.name}</span>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -155,6 +145,7 @@ import { X, Menu, ChevronDown } from "lucide-react";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 // import { NavItem } from "./NavItem";
 // import { UserProfile } from "./UserProfile";
 // import { SidebarProps } from "@/types/navigation.types";

@@ -14,7 +14,7 @@ export const NAVIGATION_ITEMS: NavItem[] = [
   { 
     name: "All leads", 
     icon: <BarChart3 className="w-5 h-5" />, 
-    href: "/dashboard/leads" ,
+    href: "/dashboard/all-leads" ,
     children: [
       { 
         name: "Software Agency", 
@@ -24,7 +24,7 @@ export const NAVIGATION_ITEMS: NavItem[] = [
       { 
         name: "Flight Lead", 
         icon: <BarChart3 className="w-5 h-5" />, 
-        href: "/dashboard/new-leads" 
+        href: "/dashboard/all-flight-sites" 
       },
     ]
   },

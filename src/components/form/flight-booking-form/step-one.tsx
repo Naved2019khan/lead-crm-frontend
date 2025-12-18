@@ -122,7 +122,7 @@ const StepOne = ({ formType = "" }) => {
   return (
     <form onSubmit={handleSubmit} className="">
       {/* Header */}
-      <div className="h-[75vh] bg-gray-100 px-3 overflow-y-scroll ">
+      <div className=" bg-gray-100 px-3 overflow-y-scroll h-[calc(75vh-200px)] ">
       <div className="text-center mb-8">
         <h2 className="text-xl font-semibold text-gray-800">
           New Booking Request

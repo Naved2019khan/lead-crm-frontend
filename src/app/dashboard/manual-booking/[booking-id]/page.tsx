@@ -12,14 +12,14 @@ import {
   GalleryVerticalEnd,
 } from "lucide-react";
 import FlightBookingForm from '@/components/form/flight-booking-form';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
 const listing = [
    <FlightBookingForm />,
    <ToddlerPanel />,
   <ChildPanel />,
    <InfantPanel />,
-   <ToddlerPanel />,
-  <ChildPanel />,
 ];
 
 const TABS: Tab[] = [
@@ -32,12 +32,20 @@ const TABS: Tab[] = [
 
 
 const Page = () => {
- 
+  const [flightData,setFlightData] = useState({})
+  const param = useParams()
+
+  useEffect(()=>{
+    console.log(param["booking-id"])
+    
+    // if(flightData){
+    //   setFlightData(JSON.parse(flightData))
+    // }
+  },[])
 
   return (
-    <div className='flex justify-center gap-4 py-4 mt-6  '>
+    <div className='bg-blue-50 '>
       <Tabbar componentList={listing} TABS={TABS} />
-      
     </div>
   )
 }

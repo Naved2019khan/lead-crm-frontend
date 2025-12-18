@@ -12,19 +12,21 @@ const FlightBookingForm = (props: Props) => {
   const renderStep = [<StepOne />, <StepTwo />, <StepThree />];
 
   return (
-    <>
+    <div className="grid grid-cols-[1fr_4fr] mx-36  ">
       <SideStepper />
+      <div>
       {renderStep?.map((element, index) => {
         return (
           <div
-            key={index}
-            className={`${index != stepCount && "hidden"}  w-full max-w-4xl`}
+          key={index}
+          className={`${index != stepCount && "hidden"}  w-full `}
           >
             {element}
           </div>
         );
       })}
-    </>
+      </div>
+    </div>
   );
 };
 
