@@ -1,5 +1,5 @@
 "use client";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Tabbar from "@/components/ui/Tabbar";
 import {
   NotebookPen,
@@ -13,12 +13,18 @@ import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { getManualBookingsById } from "@/services/api/booking-api";
 import { setPageData } from "@/redux/slice/page-data-slice";
+import FareCard from "@/components/section/manualBooking/FareCard";
+import PassengerInfoCard from "@/components/section/manualBooking/PassangerInfoCard";
+import PassengerList from "@/components/section/manualBooking/PassangerInfoCard";
+import BookingHistoryTimeline from "@/components/section/manualBooking/BookingHistoryTimeline";
+import TripCard from "@/components/section/manualBooking/TripCard";
 
 const listing = [
   <FlightBookingForm key={0} />,
-  <ToddlerPanel  key={1}/>,
-  <ChildPanel  key={2}/>,
-  <InfantPanel key={3}/>,
+  <FareCard  key={1}/>,
+  <PassengerList  key={2}/>,
+  <TripCard  key={3}/>,
+  <BookingHistoryTimeline key={4}/>,
 ];
 
 const TABS: Tab[] = [
@@ -91,12 +97,15 @@ function InfantPanel() {
 }
 
 function ToddlerPanel() {
+  const flightData = useSelector((state) => state.pageDataSlice);
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-2">Toddler (2 – 4 years)</h3>
-      <p className="text-sm text-gray-600">
-        Configure toddler-specific needs such as supervision and amenities.
-      </p>
+      <h3 className="text-lg font-semibold mb-2"></h3>
+     <pre>
+        <code>
+        {JSON.stringify(flightData, null, 2) }
+        </code>
+     </pre>
     </div>
   );
 }
