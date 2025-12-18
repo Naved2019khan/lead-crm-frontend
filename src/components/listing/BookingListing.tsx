@@ -33,27 +33,35 @@ const BOOKING_OPTION = [
     value: "cancelled",
   },
 ];
- 
-const BookingListing = ({ flight }: { flight: any }) => {
-  const [bookingStatus,setBookingStatus] = useState(flight?.bookingStatus)
 
-  async function updateBookingStatus(value : string) {
+const BookingListing = ({ flight }: { flight: any }) => {
+  const [bookingStatus, setBookingStatus] = useState(flight?.bookingStatus)
+
+  const tripTypeColor = (t: any) => {
+    switch (t) {
+      case 1: return 'bg-yellow-100 text-yellow-700';
+      case 2: return 'bg-green-100 text-green-700';
+      default: return '';
+    }
+  };
+
+  async function updateBookingStatus(value: string) {
     setBookingStatus(value)
-    const res = await updateBooking({status : value , _id : flight._id})
-    console.log(res,"DDD")
-    if(res.success){
+    const res = await updateBooking({ status: value, _id: flight._id })
+    console.log(res, "DDD")
+    if (res.success) {
       toast.success('Status Updated Successfully');
     }
   }
 
   return (
     <tr className="hover:bg-emerald-50 max-h-[100px]">
-       <td className="px-2 py-3 ">
+      <td className="px-2 py-3 ">
         <div className="w-36 px-2">
-          <Dropdown onChange={(value)=>updateBookingStatus(value)} value={bookingStatus} options={BOOKING_OPTION} />
+          <Dropdown onChange={(value) => updateBookingStatus(value)} value={bookingStatus} options={BOOKING_OPTION} />
         </div>
       </td>
-      <td className="px-4 py-6"> 
+      <td className="px-4 py-6">
         <Link href={`manual-booking/${flight._id}`}
           className="text-sm  bg-green-600 shadow-2xl text-white  hover:bg-green-900   px-4 py-2 rounded-md">
           View
@@ -88,15 +96,16 @@ const BookingListing = ({ flight }: { flight: any }) => {
 
       {/* FlightDetail */}
       <td className="px-4 py-6">{flight?.pnr || "N/A"}</td>
-     
+
       <td className="px-4 py-3">
         <div className="bg-slate-50 rounded-lg p-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
-                {flight?.trip?.tripType ? "Round Trip" : "One Way"}
+              <span className={`text-xs font-medium ${tripTypeColor(+flight?.trip?.tripType)} px-2 py-0.5 rounded`}>
+                {flight?.trip?.tripType == 2 ? "Round Trip" : "One Way"}
+                
               </span>
-              <span className="text-xs text-slate-500">{TRAVEL_CLASS [flight?.trip?.cabinClass]}</span>
+              <span className="text-xs text-slate-500">{TRAVEL_CLASS[flight?.trip?.cabinClass]}</span>
             </div>
 
             <div className="flex items-center gap-3 flex-1 justify-center">
@@ -118,7 +127,7 @@ const BookingListing = ({ flight }: { flight: any }) => {
                 />
               </svg>
               <span className="text-base font-bold text-gray-800">
-                 {flight?.trip?.to}
+                {flight?.trip?.to}
               </span>
             </div>
 
@@ -163,9 +172,9 @@ const BookingListing = ({ flight }: { flight: any }) => {
       </td>
 
       <td className="px-4 py-3 font-semibold whitespace-nowrap">
-        {flight?.totalPrice || ""} 
+        {flight?.totalPrice || ""}
       </td>
-      <td className="px-4 py-3"></td>     
+      <td className="px-4 py-3"></td>
     </tr>
   );
 };

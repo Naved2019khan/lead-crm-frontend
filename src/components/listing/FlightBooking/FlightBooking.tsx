@@ -49,11 +49,11 @@ const FlightBooking = ({  }: { }) => {
             default: return '';
         }
     };
+  
 
     async function fetchAllBookings() {
         const response = await getManualBookings()
         setBookingResponse(response.data)
-        console.log(response.data)
         toast.success('Flight Booking Loaded Successfully');
     }
 
