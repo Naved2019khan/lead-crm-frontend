@@ -113,9 +113,9 @@ const StepOne = ({ formType = "" }) => {
     setErrors(error);
     if (!error) {
       dispatch(handleNext(formData))
-      console.log("✅ Valid Form Data:", formData);
+      // console.log("✅ Valid Form Data:", formData);
     } else {
-      console.log("❌ Validation failed");
+      // console.log("❌ Validation failed");
     }
   };
 

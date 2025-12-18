@@ -6,7 +6,7 @@ export const DataTable = ({ data, columns, onRowAction }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+    <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white min-h-[calc(90vh-16rem)]">
       <table className="w-full">
         <thead className="bg-gray-50 border-b border-gray-200">
           <tr>

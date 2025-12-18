@@ -24,7 +24,7 @@ export const NAVIGATION_ITEMS: NavItem[] = [
       { 
         name: "Flight Lead", 
         icon: <BarChart3 className="w-5 h-5" />, 
-        href: "/dashboard/all-flight-sites" 
+        href: "/dashboard/flight-leads" 
       },
     ]
   },

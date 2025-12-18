@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/Badge";
 import { DataTable } from "@/components/ui/DataTable";
 import { Toolbar } from "@/components/ui/Toolbar";
-import { convertLeadToTicket } from "@/services/api/flight-api";
+import { flightLeadHandler } from "@/utils/flights/flightLeadHandler";
 import { AlertCircle, Calendar, CheckCircle2, Clock, Edit, Eye, Mail, MoreVertical, Phone, Plane, Tag, Trash2, XCircle } from "lucide-react";
 import React, { useState } from "react";
 
@@ -37,10 +37,11 @@ const FlightLeadsTable = ({ initialLeads }) => {
     // Add your action handlers here
     switch(action) {
       case "convert":
-        convertLeadToTicket(lead)
+        flightLeadHandler.converLead(lead);
         break;
       case "edit":
         // Edit lead
+        
         break;
       case "delete":
         // Delete lead

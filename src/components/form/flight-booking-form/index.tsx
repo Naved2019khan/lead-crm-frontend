@@ -7,7 +7,7 @@ import StepThree from "./step-three";
 
 type Props = {};
 
-const FlightBookingForm = (props: Props) => {
+const FlightBookingForm = () => {
   const { stepCount } = useSelector((state: any) => state.stepperSlice);
   const renderStep = [<StepOne />, <StepTwo />, <StepThree />];
 

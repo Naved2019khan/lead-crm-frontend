@@ -1,5 +1,8 @@
 import axiosInstance from "@/utils/axiosInstance";
 import { errorHandler } from "@/utils/errorHandler";
+const FLIGHT_BOOKING_ENDPOINT = {
+    convertFlightLead : "/booking/convert-flight-lead",
+}
 
 export const createBooking = async (data) => {
   try {
@@ -24,6 +27,28 @@ export const getManualBookings = async () => {
   try {
     const response = await axiosInstance.get(
       "/booking/get-all-flight-booking"
+    );
+    return response.data;
+  } catch (error) {
+    errorHandler(error)
+  }
+};
+export const getManualBookingsById = async (params) => {
+  try {
+    const response = await axiosInstance.post(
+      `/booking/get-booking/${params}`
+    );
+    return response.data;
+  } catch (error) {
+    errorHandler(error)
+  }
+};
+
+
+export const convertLeadToTicket = async (data) => {
+  try {
+    const response = await axiosInstance.post(
+      FLIGHT_BOOKING_ENDPOINT.convertFlightLead+"/"+data._id, {}
     );
     return response.data;
   } catch (error) {
