@@ -1,5 +1,7 @@
+"use server"
 import axiosInstance from "@/utils/axiosInstance";
 import { errorHandler } from "@/utils/errorHandler";
+import { revalidatePath } from "next/cache";
 const FLIGHT_BOOKING_ENDPOINT = {
     convertFlightLead : "/booking/convert-flight-lead",
 }
@@ -50,8 +52,10 @@ export const convertLeadToTicket = async (data) => {
     const response = await axiosInstance.post(
       FLIGHT_BOOKING_ENDPOINT.convertFlightLead+"/"+data._id, {}
     );
+    revalidatePath("/dashboard/flight-leads");
     return response.data;
   } catch (error) {
     errorHandler(error)
+  } finally {
   }
 };

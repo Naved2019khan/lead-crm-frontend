@@ -1,9 +1,8 @@
 "use client";
-
-import { DOMAIN_NAME } from "@/lib/constants";
-import { setOpenModal } from "@/redux/slice/auth-slice";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
+import { DOMAIN_NAME } from "@/lib/constants";
+import { setOpenModal } from "@/redux/slice/auth-slice";
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -24,8 +23,8 @@ export default function Header() {
           <Link href="/" className="hover:text-blue-600">Home</Link>
           <Link href="/about" className="hover:text-blue-600">About</Link>
           <Link href="/blog" className="hover:text-blue-600">Blog</Link>
-         
         </div>
+        
         <div className="space-x-2">
          <button
             onClick={handleLogin}
@@ -38,6 +37,7 @@ export default function Header() {
             className="px-4 py-2 bg-gray-100 text-black rounded hover:bg-gray-200"
             >
             Sign Up
+
           </button>
             </div>
       </nav>

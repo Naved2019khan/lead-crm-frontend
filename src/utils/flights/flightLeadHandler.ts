@@ -1,11 +1,9 @@
-'use server'
-import { revalidatePath } from 'next/cache'
+"use server";
+import { revalidatePath } from "next/cache";
 import { convertLeadToTicket } from "@/services/api/booking-api";
 
-
-export const flightLeadHandler = {
-   converLead : async (data) => {
-      return await convertLeadToTicket(data);
-      revalidatePath('/');
-   }
-}
+export const convertLead = async (data) => {
+  const response = await convertLeadToTicket(data);
+  revalidatePath("/dashboard/flight-leads");
+  return response.data;
+};
