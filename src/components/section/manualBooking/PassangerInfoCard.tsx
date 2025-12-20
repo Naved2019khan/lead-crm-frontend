@@ -1,30 +1,10 @@
 import { User, Calendar, Users, Edit2, Save, X, CreditCard } from "lucide-react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function PassengerList() {
-  const [passengers, setPassengers] = useState([
-    {
-      _id: "p1",
-      firstName: "NAVED",
-      lastName: "KHAN",
-      dob: "1990-01-01",
-      gender: "Male",
-    },
-    {
-      _id: "p2",
-      firstName: "AISHA",
-      lastName: "KHAN",
-      dob: "1994-06-12",
-      gender: "Female",
-    },
-    {
-      _id: "p3",
-      firstName: "AHMED",
-      lastName: "ALI",
-      dob: "2018-04-10",
-      gender: "Male",
-    },
-  ]);
+  const initialData = useSelector((state) => state?.pageDataSlice?.data);
+  const [passengers, setPassengers] = useState([...initialData?.passengers]);
 
   const handleSavePassenger = (updated) => {
     setPassengers((prev) =>

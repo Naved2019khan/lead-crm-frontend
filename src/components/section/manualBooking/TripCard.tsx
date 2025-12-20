@@ -3,25 +3,21 @@ import {
   PlaneLanding,
   ArrowRight,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const cabinMap = ["Economy", "Premium Economy", "Business", "First"];
 
 export default function TripCard() {
-  const trip = {
-    tripType: "ROUND_TRIP",
-    from: "DEL",
-    to: "BLR",
-    airline: "Vistara",
-    depDate: "2025-02-10T06:45:00.000Z",
-    cabinClass: 1,
-    airlineNo: "UK 819",
-  };
+  const initialData = useSelector((state) => state?.pageDataSlice?.data);
+  const trip = initialData?.trip;
 
   const returnTrip = {
-    from: "BLR",
-    to: "DEL",
-    depDate: "2025-02-15T14:20:00.000Z",
-    airlineNo: "UK 820",
+    returnFrom: "BOM",
+    returnTo: "DEL",
+    returnAirline: "Air India",
+    returnDepDate: "2025-02-15T14:20:00.000Z",
+    returnCabinClass: 1,
+    returnAirlineNo: "UK 820",
   };
 
   return (

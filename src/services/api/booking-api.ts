@@ -1,7 +1,5 @@
-"use server"
 import axiosInstance from "@/utils/axiosInstance";
 import { errorHandler } from "@/utils/errorHandler";
-import { revalidatePath } from "next/cache";
 const FLIGHT_BOOKING_ENDPOINT = {
     convertFlightLead : "/booking/convert-flight-lead",
 }
@@ -37,8 +35,7 @@ export const getManualBookings = async () => {
 };
 export const getManualBookingsById = async (params) => {
   try {
-    const response = await axiosInstance.post(
-      `/booking/get-booking/${params}`
+    const response = await axiosInstance.post(`/booking/get-booking/${params}`
     );
     return response.data;
   } catch (error) {
@@ -52,7 +49,6 @@ export const convertLeadToTicket = async (data) => {
     const response = await axiosInstance.post(
       FLIGHT_BOOKING_ENDPOINT.convertFlightLead+"/"+data._id, {}
     );
-    revalidatePath("/dashboard/flight-leads");
     return response.data;
   } catch (error) {
     errorHandler(error)

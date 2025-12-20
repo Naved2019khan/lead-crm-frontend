@@ -1,18 +1,21 @@
 import { DollarSign, CreditCard, Wallet, Calendar, User, Edit2, Save, X, Tag } from 'lucide-react';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function FareCard() {
   const [isEditing, setIsEditing] = useState(false);
+  const initialData = useSelector((state) => state?.pageDataSlice?.data);
+  
   const [paymentData, setPaymentData] = useState({
-    currency: "INR",
-    totalPrice: 2324,
-    netCost: 2324,
-    mco: 0,
-    transactionId: "TXN1234567890",
-    date: "Dec 18, 2025",
-    customer: "John Doe",
+    currency: initialData?.currency,
+    totalPrice: initialData?.totalPrice,
+    netCost: initialData?.netCost,
+    mco: initialData?.mco,
+    transactionId: initialData?._id,
+    date: initialData?.createdAt,
+    customer: initialData?.passengers?.[0].firstName + ' ' + initialData?.passengers?.[0]?.lastName,
     paymentMethod: "Credit Card",
-    status: "Confirmed"
+    status: initialData?.status
   });
 
   const [editData, setEditData] = useState({...paymentData});

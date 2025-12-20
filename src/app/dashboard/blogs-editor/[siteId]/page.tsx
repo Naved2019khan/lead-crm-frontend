@@ -6,15 +6,17 @@ import { NavigationButton } from '@/components/button/NavigationButton'
 
 const Page = async({searchParams}) => {
   const identifier = (await searchParams).id
+  let isBlogEdit = false
   let initialData = {}
   if(searchParams){
     const response = await blogAPI.getOne(identifier)
     initialData = response.data
+    isBlogEdit = true
   }
 
   return (<>
   <NavigationButton label='Blog Listing' backLink='/dashboard/blogs-listing' />
-  <BlogEditor initialData={initialData} />
+  <BlogEditor initialData={initialData} isBlogEdit={isBlogEdit} />
   </>)
   
 }

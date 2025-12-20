@@ -77,7 +77,7 @@ export const blogAPI = {
 
   // Update blog
   update: async (id, blogData) => {
-    const response = await fetch(`${API_URL}/blogs/${id}`, {
+    const response = await fetch(`${API_URL}/blog/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(blogData)

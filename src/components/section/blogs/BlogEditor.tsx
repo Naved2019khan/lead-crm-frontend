@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Bold, Italic, List, ListOrdered, Heading1, Heading2, Heading3, Link, Image, Eye, Save } from 'lucide-react';
 import { blogAPI } from '@/services/api/blog-api';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 const fallback = {
@@ -18,9 +18,13 @@ const fallback = {
     status: 'draft'
   }
 
-export default function BlogEditor({ initialData = fallback }) {
+export default function BlogEditor({ initialData = fallback ,isBlogEdit }) {
   const [formData, setFormData] = useState(initialData);
   const { siteId } = useParams()
+  const   blogId = useSearchParams().get('id')
+  const router = useRouter();
+
+  
 
   const [preview, setPreview] = useState(false);
 
@@ -109,11 +113,15 @@ export default function BlogEditor({ initialData = fallback }) {
       updatedAt: new Date().toISOString()
     };
     // console.log(blogData)
-
-    const response = await blogAPI.create(blogData);
-    
+    let response
+    if(isBlogEdit){
+       response = await blogAPI.update(blogId,blogData);
+      
+    } else{
+       response = await blogAPI.create(blogData);
+    }    
     toast.success('Blog post saved! Check console for data.');
-    // alert('Blog post saved! Check console for data.');
+    router.push('/dashboard/blogs-listing');
   };
 
   return (
