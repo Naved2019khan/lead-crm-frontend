@@ -39,7 +39,12 @@ export const NAVIGATION_ITEMS: NavItem[] = [
     href: "/dashboard/all-agency-sites" 
   },
   { 
-    name: "Software Site", 
+    name: "Capture Lead", 
+    icon: <Globe className="w-5 h-5" />, 
+    href: "/dashboard/capture-lead" 
+  },
+  { 
+    name: "Flight Site", 
     icon: <Globe className="w-5 h-5" />, 
     href: "/dashboard/all-flight-sites" 
   },

@@ -2,8 +2,8 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { 
-  Search, Filter, Download, Plus, Mail, Phone, MoreVertical, 
+import {
+  Search, Filter, Download, Plus, Mail, Phone, MoreVertical,
   Eye, Edit, Trash2, Star, ChevronDown, ChevronUp, Calendar,
   TrendingUp, Building2, User, DollarSign, Clock, CheckCircle2,
   XCircle, AlertCircle, Tag, MessageSquare, X, Save
@@ -153,7 +153,7 @@ const LeadsDataTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [showActionMenu, setShowActionMenu] = useState<string | null>(null);
-  
+
   // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -214,7 +214,7 @@ const LeadsDataTable = () => {
       lastContact: new Date().toISOString().split('T')[0],
       notes: 0
     };
-    
+
     setLeads([newLead, ...leads]);
     setShowAddModal(false);
     resetForm();
@@ -241,13 +241,13 @@ const LeadsDataTable = () => {
 
   const handleUpdateLead = () => {
     if (!editingLead) return;
-    
-    setLeads(leads.map(lead => 
-      lead.id === editingLead.id 
+
+    setLeads(leads.map(lead =>
+      lead.id === editingLead.id
         ? { ...lead, ...formData, lastContact: new Date().toISOString().split('T')[0] }
         : lead
     ));
-    
+
     setShowEditModal(false);
     setEditingLead(null);
     resetForm();
@@ -279,23 +279,23 @@ const LeadsDataTable = () => {
   // Filtering and sorting
   const filteredAndSortedLeads = useMemo(() => {
     let filtered = leads.filter(lead => {
-      const matchesSearch = 
+      const matchesSearch =
         lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         lead.company.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
-      
+
       return matchesSearch && matchesStatus;
     });
 
     filtered.sort((a, b) => {
       let aVal = a[sortField];
       let bVal = b[sortField];
-      
+
       if (typeof aVal === 'string') aVal = aVal.toLowerCase();
       if (typeof bVal === 'string') bVal = bVal.toLowerCase();
-      
+
       if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
       if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
       return 0;
@@ -585,7 +585,7 @@ const LeadsDataTable = () => {
             <h1 className="text-2xl font-bold text-gray-900">Leads</h1>
             <p className="text-sm text-gray-500 mt-1">{filteredAndSortedLeads.length} total leads</p>
           </div>
-          <button 
+          <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
@@ -606,7 +606,7 @@ const LeadsDataTable = () => {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-          
+
           <div className="flex gap-2">
             <select
               value={statusFilter}
@@ -618,12 +618,12 @@ const LeadsDataTable = () => {
                 <option key={key} value={key}>{config.label}</option>
               ))}
             </select>
-            
+
             <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
               <Filter className="w-4 h-4" />
               Filters
             </button>
-            
+
             <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
               <Download className="w-4 h-4" />
               Export
@@ -818,9 +818,9 @@ const LeadsDataTable = () => {
                     <button className="p-1.5 hover:bg-blue-50 rounded transition-colors" title="View Details">
                       <Eye className="w-4 h-4 text-gray-600" />
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleEditClick(lead)}
-                      className="p-1.5 hover:bg-green-50 rounded transition-colors" 
+                      className="p-1.5 hover:bg-green-50 rounded transition-colors"
                       title="Edit"
                     >
                       <Edit className="w-4 h-4 text-gray-600" />
@@ -829,7 +829,7 @@ const LeadsDataTable = () => {
                       <Mail className="w-4 h-4 text-gray-600" />
                     </button>
                     <div className="relative">
-                      <button 
+                      <button
                         onClick={() => setShowActionMenu(showActionMenu === lead.id ? null : lead.id)}
                         className="p-1.5 hover:bg-gray-100 rounded transition-colors"
                       >
@@ -846,7 +846,7 @@ const LeadsDataTable = () => {
                           <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2">
                             <Tag className="w-4 h-4" /> Add Tags
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleDeleteLead(lead.id)}
                             className="w-full px-4 py-2 text-left text-sm hover:bg-red-50 text-red-600 flex items-center gap-2"
                           >
@@ -882,11 +882,10 @@ const LeadsDataTable = () => {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`px-4 py-2 rounded-lg ${
-                  currentPage === page
+                className={`px-4 py-2 rounded-lg ${currentPage === page
                     ? 'bg-blue-600 text-white'
                     : 'border border-gray-300 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 {page}
               </button>

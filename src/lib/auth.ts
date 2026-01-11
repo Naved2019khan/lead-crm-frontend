@@ -1,7 +1,7 @@
 import { signInNetworkCall } from "@/services/api/auth-api";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import "dotenv/config";   // ← this loads .env.local automatically
+
 
 export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
     pages: {
@@ -34,19 +34,24 @@ export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
         if (user) {
         token.id = user.id;
         token.email = user.email;
-        token.token = user.token;
+        token.token = user.token || "N/A";
+        token.role = user.role
+        token.name = user.name
       }
       return token;
       }
-      catch{
-        console.warn("Error in jwt callback", token, user);
+      catch(err){
+        console.warn("Error in jwt callback", err, user);
       }
     },
     async session({ session, token }) {
         session.user = {
         id: token.id as number,
         email: token.email as string,
-        token: token.token as string
+        token: token.token as string,
+        role: token.role as string,
+        name: token.name as string
+
       };
       return session;
     },

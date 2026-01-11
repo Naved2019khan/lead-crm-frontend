@@ -1,10 +1,12 @@
-import axiosInstance from "@/utils/axiosInstance";
+
+
 const CRM_ENDPOINT = {
     createLead : "/agency/create-agency-lead",
     getALLLead : "/agency/get-all-agency-leads",
     getLeadById : "/agency/get-agency-lead/",
     updateLead : "/agency/update-agency-lead"
 }
+const axios = axiosInstance()
 
 export const createNewLead = async (data) => {
   try {
