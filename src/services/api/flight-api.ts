@@ -1,4 +1,5 @@
-import axiosInstance from "@/utils/axiosInstance";
+
+import { axiosServer } from "@/utils/axiosInstance";
 import { errorHandler } from "@/utils/errorHandler";
 const FLIGHT_LEAD_ENDPOINT = {
     getAllFlightsLeads : "/flight/get-all-flight-lead",
@@ -8,6 +9,7 @@ const FLIGHT_LEAD_ENDPOINT = {
 
 export const getAllFlights = async () => {
   try {
+     const axiosInstance = await axiosServer();
     const response = await axiosInstance.get(
       FLIGHT_LEAD_ENDPOINT.getAllFlightsLeads
     );

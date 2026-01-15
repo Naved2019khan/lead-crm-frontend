@@ -1,5 +1,4 @@
-import axios from "axios"
-const CRM_URL = process.env.NEXT_PUBLIC_BASE_URL
+import { axiosServer } from "@/utils/axiosInstance";
 const CRM_ENDPOINT = {
     getAllLead : "/agency/get-all-agency-leads",
     getLeadById : "/agency/get-agency-lead",
@@ -8,7 +7,8 @@ const CRM_ENDPOINT = {
 
 export const getAllLeads = async () => {
     try {
-        const response = await axios.get(CRM_URL + CRM_ENDPOINT.getAllLead)
+        const axiosInstance = await axiosServer();
+        const response = await axiosInstance.get(CRM_ENDPOINT.getAllLead)
         return response.data
     } catch (error) {
         throw error
@@ -18,7 +18,8 @@ export const getAllLeads = async () => {
 
 export const getLeadById = async (leadId: string) => {
     try {
-        const response = await axios.get(`${CRM_URL}${CRM_ENDPOINT.getLeadById}/${leadId}`);
+        const axiosInstance = await axiosServer();
+        const response = await axiosInstance.get(`${CRM_ENDPOINT.getLeadById}/${leadId}`);
         return response.data
     } catch (error) {
         throw error
@@ -27,7 +28,8 @@ export const getLeadById = async (leadId: string) => {
 
 export const updateLead = async (leadId: string, data: any) => {
     try {
-        const response = await axios.put(`${CRM_URL}${CRM_ENDPOINT.updateLead}/${leadId}`, data);
+         const axiosInstance = await axiosServer();
+        const response = await axiosInstance.put(`${CRM_ENDPOINT.updateLead}/${leadId}`, data);
         return response.data
     } catch (error) {
         throw error

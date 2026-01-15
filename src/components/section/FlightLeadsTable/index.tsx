@@ -40,9 +40,9 @@ const statusConfig = {
   lost: { label: "Lost", color: "bg-red-100 text-red-700", icon: XCircle },
 };
 
-const FlightLeadsTable = () => {
-  const [leads, setLeads] = useState([]);
-  const [filteredLeads, setFilteredLeads] = useState([]);
+const FlightLeadsTable = ({ flights }) => {
+  const [leads, setLeads] = useState(flights);
+  const [filteredLeads, setFilteredLeads] = useState(flights);
   const [statusFilter, setStatusFilter] = useState("all");
   const handleSearch = (term) => {
     const filtered = leads.filter(
@@ -58,11 +58,11 @@ const FlightLeadsTable = () => {
     );
   };
 
-  const fetchLeads = async () => {
-    const response = await getAllFlights();
-    setLeads(response?.data);
-    setFilteredLeads(response?.data);
-  };
+  // const fetchLeads = async () => {
+  //   const response = await getAllFlights();
+  //   setLeads(response?.data);
+  //   setFilteredLeads(response?.data);
+  // };
 
   React.useEffect(() => {
     setFilteredLeads(
@@ -72,9 +72,9 @@ const FlightLeadsTable = () => {
     );
   }, [statusFilter, leads]);
 
-  useEffect(() => {
-    fetchLeads();
-  }, []);
+  // useEffect(() => {
+  //   fetchLeads();
+  // }, []);
 
   const handleRowAction = async (action, lead) => {
     // console.log(`Action: ${action}`, lead);
@@ -82,7 +82,6 @@ const FlightLeadsTable = () => {
     switch (action) {
       case "convert":
         await convertLeadToTicket(lead);
-        fetchLeads()
         break;
       case "edit":
         // Edit lead

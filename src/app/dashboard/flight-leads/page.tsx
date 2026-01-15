@@ -4,8 +4,9 @@ import React from 'react'
 
 const FlightLeads = async () => {
     
+  let data = await getAllFlights()
     
-  return  <FlightLeadsTable />
+  return  <FlightLeadsTable  flights={data?.data}/>
 }
 
 export default FlightLeads

@@ -1,7 +1,9 @@
-import axiosInstance from "@/utils/axiosInstance";
+import { axiosServer } from "@/utils/axiosInstance";
+
 
 export const createAgencySites = async (data) => {
   try {
+      const axiosInstance = await axiosServer();
     const response = await axiosInstance.post(
       "/product/create-agency-site",
       data
@@ -19,6 +21,7 @@ export const createAgencySites = async (data) => {
  */
 export const getAgencySites = async () => {
   try {
+     const axiosInstance = await axiosServer();
     const response = await axiosInstance.post("/product/get-all-agency",{});
     return response.data;
   } catch (error) {
@@ -28,6 +31,7 @@ export const getAgencySites = async () => {
 
 export const updateAgencySites = async ( data,oldSiteId) => {
   try {
+     const axiosInstance = await axiosServer();
     const response = await axiosInstance.post(
       `/api/product/update-agency/${oldSiteId}`,
       data
@@ -40,6 +44,7 @@ export const updateAgencySites = async ( data,oldSiteId) => {
 
 export const createFlightSites = async (data) => {
   try {
+     const axiosInstance = await axiosServer();
     const response = await axiosInstance.post(
       "/product/create-flight-site",
       data
@@ -52,6 +57,7 @@ export const createFlightSites = async (data) => {
 
 export const getFlightSites = async () => {
   try {
+     const axiosInstance = await axiosServer();
     const response = await axiosInstance.post(
       "/product/get-all-flight-site"
     );
@@ -63,6 +69,7 @@ export const getFlightSites = async () => {
 
 export const updateFlightSites = async (siteId: number, data) => {
   try {
+     const axiosInstance = await axiosServer();
     const response = await axiosInstance.post(
       `/api/product/update-flight-site/${siteId}`,
       data
@@ -83,6 +90,7 @@ export const productApi = {
   // updateFlightSites,
   getAllProducts: async () => {
     try {
+       const axiosInstance = await axiosServer();
       const response = await axiosInstance.get("/product/get-all-product");
       return response.data;
     } catch (error) {
