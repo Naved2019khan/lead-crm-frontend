@@ -1,17 +1,13 @@
 // components/FlightTable.tsx
 "use client"
-import { useState, useMemo, useEffect } from 'react';
-import { PaxPopup } from "./PaxPopup";
+import { useState, useMemo } from 'react';
 import BookingListing from '../BookingListing';
-import { toast } from 'sonner';
-import { getManualBookings } from '@/services/api/booking-api';
 
 
-const FlightBooking = ({  }: { }) => {
+const FlightBooking = ({ bookingResponse }) => {
     const [search, setSearch] = useState('');
     const [sortKey, setSortKey] = useState(null);
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
-    const [bookingResponse,setBookingResponse] = useState([])
 
     const filtered = useMemo(() => {
         if (!bookingResponse) return []
@@ -49,18 +45,7 @@ const FlightBooking = ({  }: { }) => {
             default: return '';
         }
     };
-  
 
-    async function fetchAllBookings() {
-        const response = await getManualBookings()
-        setBookingResponse(response.data)
-        toast.success('Flight Booking Loaded Successfully');
-    }
-
-
-    useEffect(() => {
-        fetchAllBookings()
-    }, []);
 
 
     return (
@@ -104,7 +89,7 @@ const FlightBooking = ({  }: { }) => {
                                 <BookingListing
                                     key={flight._id}
                                     flight={flight}
-                                    />
+                                />
                             )
                         })}
                     </tbody>

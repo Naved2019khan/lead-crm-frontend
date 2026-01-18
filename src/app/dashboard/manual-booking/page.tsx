@@ -1,21 +1,25 @@
-import FlightBooking from '@/components/listing/FlightBooking/FlightBooking'
+import FlightBookingServer from '@/components/listing/FlightBooking/FlightBookingServer'
 import BookingTableToolbar from '@/components/toolbar/booking-toolbar'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 
 
 const Page = () => {
   return (
-    <div>
+    <>
       <nav>
-        <div className='bg-white flex justify-end px-12'>
+        <div className='bg-white flex justify-end '>
           <Link href="/dashboard/manual-booking/new" className='bg-black text-white py-2 px-4 rounded-2xl mt-2'>
-            <h1>+Create Manual Booking</h1></Link>
+            <h1>+Create Manual Booking</h1>
+            </Link>
         </div>
       </nav>
       <BookingTableToolbar />
-      <FlightBooking />
-      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+      <FlightBookingServer />
+      </Suspense>
+      </>
   )
 }
 

@@ -3,12 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Search, Plus, Edit, Eye, Trash2, Calendar, User, Tag, FileText, CheckCircle, Clock, XCircle, Globe, ChevronDown,
 } from "lucide-react";
 
-import { blogAPI } from "@/services/api/blog-api";
 import Link from "next/link";
+import { blogAPI } from "@/services/api/blog-api";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import { productApi } from "@/services/api/product-api";
 import { localStorage } from "@/lib/storage/localStorage";
 import { STORAGE_KEYS } from "@/lib/storage/storageKeys";
+export const dynamic = "force-dynamic";
+export const cache = "no-store"
+
 
 export default function BlogListingPage() {
   const [blogs, setBlogs] = useState([]);
@@ -132,18 +135,17 @@ export default function BlogListingPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await blogAPI.getAll(selectedSite.siteId);
+      const response = await blogAPI.getAll({siteId: selectedSite.siteId});
 
       if (response?.data && Array.isArray(response.data)) {
         setBlogs(response.data);
       } else {
         setBlogs([]);
-        console.warn("Unexpected API response format:", response);
+        console.log("Unexpected API response format:", response);
       }
     } catch (error) {
-      console.error("Error fetching blogs:", error);
+      console.log("Error fetching blogs:", error);
       setError("Failed to load blogs. Please try again later.");
-      setBlogs([]);
     } finally {
       setLoading(false);
     }

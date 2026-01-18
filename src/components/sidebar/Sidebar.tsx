@@ -141,14 +141,12 @@ export const UserProfile = () => {
 // 6. Main Sidebar Component (components/Sidebar/Sidebar.tsx)
 // ===================================
 // "use client";
-import { X, Menu, ChevronDown } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-// import { NavItem } from "./NavItem";
-// import { UserProfile } from "./UserProfile";
-// import { SidebarProps } from "@/types/navigation.types";
+
 
 export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
   return (

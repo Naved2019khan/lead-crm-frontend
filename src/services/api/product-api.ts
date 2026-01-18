@@ -1,18 +1,10 @@
+
 import { axiosServer } from "@/utils/axiosInstance";
+import axiosClient from "../axiosClient";
 
 
-export const createAgencySites = async (data) => {
-  try {
-      const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post(
-      "/product/create-agency-site",
-      data
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+
+
 
 /**
  * Retrieves all agency sites from the server.
@@ -29,31 +21,7 @@ export const getAgencySites = async () => {
   }
 };
 
-export const updateAgencySites = async ( data,oldSiteId) => {
-  try {
-     const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post(
-      `/api/product/update-agency/${oldSiteId}`,
-      data
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
 
-export const createFlightSites = async (data) => {
-  try {
-     const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post(
-      "/product/create-flight-site",
-      data
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
 
 export const getFlightSites = async () => {
   try {
@@ -67,31 +35,12 @@ export const getFlightSites = async () => {
   }
 };
 
-export const updateFlightSites = async (siteId: number, data) => {
-  try {
-     const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post(
-      `/api/product/update-flight-site/${siteId}`,
-      data
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
 
 
 export const productApi = {
-  // createAgencySites,
-  // getAgencySites,
-  // updateAgencySites,
-  // createFlightSites,
-  // getFlightSites,
-  // updateFlightSites,
   getAllProducts: async () => {
     try {
-       const axiosInstance = await axiosServer();
-      const response = await axiosInstance.get("/product/get-all-product");
+      const response = await axiosClient.get("/product/get-all-product");
       return response.data;
     } catch (error) {
       throw error;

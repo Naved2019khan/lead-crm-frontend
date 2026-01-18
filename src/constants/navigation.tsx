@@ -1,4 +1,4 @@
-import { BarChart3, Home, Settings, Users, FileText, Globe, FileSpreadsheet } from "lucide-react";
+import { BarChart3, Home, Settings, Users, FileText, Globe, FileSpreadsheet, Mail } from "lucide-react";
 export interface NavItem {
   name: string;
   icon: React.ReactNode;
@@ -52,6 +52,11 @@ export const NAVIGATION_ITEMS: NavItem[] = [
     name: "Users", 
     icon: <Users className="w-5 h-5" />, 
     href: "/dashboard/user-listing" 
+  },
+  { 
+    name: "Mailing List", 
+    icon: <Mail className="w-5 h-5" />, 
+    href: "/dashboard/email-subscribe" 
   },
   { 
     name: "Blogs", 

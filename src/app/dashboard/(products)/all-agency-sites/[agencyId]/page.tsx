@@ -1,8 +1,13 @@
 // Use 'use client' for components that need interactivity like 'useState'
 import LeadListing from '@/components/listing/LeadListing';
 import { getLeadById } from '@/services/api/crm';
+type PageProps = {
+  params: {
+    agencyId: string;
+  };
+};
 
-async function LeadsPage({ params}) {
+async function LeadsPage({ params} : PageProps) {
   const { agencyId } = await params
   let leads ;
   let error = "";
@@ -10,7 +15,7 @@ async function LeadsPage({ params}) {
      leads = (await getLeadById(agencyId)).lead
      console.log(leads)
   } catch (e) {
-    error = e.message
+    
   }
 
   if (error) {

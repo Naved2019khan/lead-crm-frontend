@@ -1,15 +1,12 @@
 "use client";
-import React, { use, useRef, useState } from "react";
+import React, { useState } from "react";
 import { ProductDetailCard } from "../card/ProductDetailCard";
 import AddProductCard from "../card/AddProductCard";
 import { Modal } from "../ui/Modal";
 import { NewProductSite } from "../form/NewProductSite";
-import {
-  createAgencySites,
-  updateAgencySites,
-} from "@/services/api/product-api";
 import ThankYouModal from "../modal/ThankYouModal";
-import { updateSiteAction } from "@/app/actions/updateSiteAction";
+import { createAgencySites, createFlightSites, updateAgencySites, updateFlightSites } from "@/app/actions/product-api-action";
+import { usePathname } from "next/navigation";
 
 interface Site {
   id: string;
@@ -42,6 +39,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   const [isSubmited, setIsSubmited] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const isNewAgency = !editData;
+  const pathname = usePathname()
+  const isFlight = pathname.includes("all-flight-sites")
 
   const onClose = () => {
     setShowForm(false);
@@ -55,24 +54,22 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 
   const handleNewProduct = async (val) => {
     try {
-      const res = await createAgencySites(val);
-      await updateSiteAction();
+      isFlight ? await createFlightSites(val)   : await createAgencySites(val);
       setIsSubmited(true);
       setShowForm(false);
     } catch (error) {
-
-      setErrorMessage(error.response.data.message || error.message);
+      setErrorMessage(error?.response?.data?.message || error?.message || "Something went wrong");
       console.log(error, "error");
     }
   };
   const handleEditProduct = async (val,oldSiteId) => {
     try {
-      const res = await updateAgencySites(val,oldSiteId);
-      await updateSiteAction();
+      isFlight ? await updateFlightSites(val,oldSiteId)   : await updateAgencySites(val,oldSiteId);
+
       setIsSubmited(true);
       setShowForm(false);
     } catch (error) {
-        setErrorMessage(error.response.data.message || error.message);
+        setErrorMessage(error?.response?.data?.message || error?.message || "Something went wrong");
       console.log(error);
     }
   };
@@ -112,7 +109,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             onClick={() => setShowForm(true)}
           />
           {sites?.map((site) => {
-            return <ProductDetailCard onEdit={onEdit} site={site} />;
+            return <ProductDetailCard key={site._id} onEdit={onEdit} site={site} />;
           })}
         </div>
       </div>

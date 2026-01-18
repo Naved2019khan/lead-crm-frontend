@@ -174,7 +174,7 @@ const BookingListing = ({ flight }: { flight: any }) => {
       <td className="px-4 py-3 font-semibold whitespace-nowrap">
         {flight?.totalPrice || ""}
       </td>
-      <td className="px-4 py-3"></td>
+      {/* <td className="px-4 py-3"></td> */}
     </tr>
   );
 };

@@ -1,12 +1,16 @@
-import FlightLeadsTable from '@/components/section/FlightLeadsTable'
-import { getAllFlights } from '@/services/api/flight-api'
-import React from 'react'
+import { FlightLeadsTableServer } from '@/components/section/FlightLeadsTable'
+import React, { Suspense } from 'react'
 
-const FlightLeads = async () => {
-    
-  let data = await getAllFlights()
-    
-  return  <FlightLeadsTable  flights={data?.data}/>
+const FlightLeads = async () => {  
+  return  (
+  <>
+  <h1>Flight Lead Section</h1>
+  <Suspense fallback={<div>Loading...</div>} >
+
+  <FlightLeadsTableServer  />
+  </Suspense>
+  </>
+  )
 }
 
 export default FlightLeads
