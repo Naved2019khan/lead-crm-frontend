@@ -58,7 +58,7 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-600 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-xl">B</span>
               </div>
               <span className="text-2xl font-bold text-gray-900">Brand</span>
@@ -70,11 +70,11 @@ export default function Footer() {
             {/* Contact Info */}
             <div className="space-y-3 mb-6">
               <a href="mailto:hello@brand.com" className="flex items-center gap-3 text-gray-600 hover:text-gray-900 transition-colors group">
-                <Mail className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                <Mail className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" />
                 <span className="text-sm">hello@brand.com</span>
               </a>
               <a href="tel:+1234567890" className="flex items-center gap-3 text-gray-600 hover:text-gray-900 transition-colors group">
-                <Phone className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                <Phone className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" />
                 <span className="text-sm">+1 (234) 567-890</span>
               </a>
               <div className="flex items-start gap-3 text-gray-600">
@@ -124,7 +124,7 @@ export default function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
                 <button
                   onClick={handleSubscribe}

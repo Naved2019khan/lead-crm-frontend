@@ -18,7 +18,7 @@ export const Toolbar = ({ onSearch, onFilter, onExport, statusFilter, setStatusF
           <h1 className="text-2xl font-semibold text-gray-900">Flight Leads</h1>
           <p className="text-sm text-gray-500 mt-1">Manage and track your flight booking inquiries</p>
         </div>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+        <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2">
           <Download className="w-4 h-4" />
           Export
         </button>
@@ -32,7 +32,7 @@ export const Toolbar = ({ onSearch, onFilter, onExport, statusFilter, setStatusF
             placeholder="Search by name, email, or phone..."
             value={searchTerm}
             onChange={handleSearch}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
         </div>
         
@@ -40,7 +40,7 @@ export const Toolbar = ({ onSearch, onFilter, onExport, statusFilter, setStatusF
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
           >
             <option value="all">All Status</option>
             <option value="new">New</option>

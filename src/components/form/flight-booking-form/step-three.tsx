@@ -108,7 +108,7 @@ const StepThree = () => {
               type="text"
               value={formData.address}
               onChange={handleChange}
-              className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+              className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
                 errors.address ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="123 Main St"
@@ -129,7 +129,7 @@ const StepThree = () => {
               type="text"
               value={formData.city}
               onChange={handleChange}
-              className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+              className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
                 errors.city ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="New York"
@@ -152,7 +152,7 @@ const StepThree = () => {
             options={countries}
             value={formData.country}
             onChange={(value)=>handleChange({target:{name:"country",value}})}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
               errors.country ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -192,7 +192,7 @@ const StepThree = () => {
               type="text"
               value={formData.postalCode}
               onChange={handleChange}
-              className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+              className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
                 errors.postalCode ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="90210"
@@ -213,7 +213,7 @@ const StepThree = () => {
               type="tel"
               value={formData.billingPhone}
               onChange={handleChange}
-              className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+              className={`w-full bg-white px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
                 errors.billingPhone ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="+1 (555) 123-4567"
@@ -226,7 +226,7 @@ const StepThree = () => {
         <div className="pt-4">
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+            className="w-full bg-indigo-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
           >
             Complete
           </button>

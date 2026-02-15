@@ -19,7 +19,7 @@ import {
 import { convertLeadToTicket } from "@/services/api/booking-api";
 
 const statusConfig = {
-  new: { label: "New", color: "bg-blue-100 text-blue-700", icon: AlertCircle },
+  new: { label: "New", color: "bg-indigo-100 text-indigo-700", icon: AlertCircle },
   contacted: {
     label: "Contacted",
     color: "bg-yellow-100 text-yellow-700",

@@ -5,7 +5,7 @@ export default function HeroSection() {
   return (
     <section className="relative bg-white overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-50 to-indigo-50 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-50 to-pink-50 rounded-full blur-3xl opacity-60 translate-y-1/2 -translate-x-1/2" />
       
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pb-24  lg:pb-32">
@@ -16,7 +16,7 @@ export default function HeroSection() {
             <div className="space-y-6">
               <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
                 Build Better
-                <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-indigo-600 to-indigo-600 bg-clip-text text-transparent">
                   Products Faster
                 </span>
               </h1>  
@@ -63,7 +63,7 @@ export default function HeroSection() {
                 <div className="space-y-6">
                   {/* Header */}
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center">
                       <Sparkles className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -93,7 +93,7 @@ export default function HeroSection() {
                     {[40, 65, 45, 80, 55, 90, 70, 85, 60, 95].map((h, i) => (
                       <div
                         key={i}
-                        className="flex-1 bg-gradient-to-t from-blue-500 to-indigo-600 rounded-t opacity-80 hover:opacity-100 transition-opacity"
+                        className="flex-1 bg-gradient-to-t from-indigo-500 to-indigo-600 rounded-t opacity-80 hover:opacity-100 transition-opacity"
                         style={{ height: `${h}%` }}
                       />
                     ))}

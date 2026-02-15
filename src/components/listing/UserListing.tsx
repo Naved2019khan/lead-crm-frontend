@@ -100,7 +100,7 @@ export function Table<T extends Record<string, any>>({
               onClick={() => onRowClick?.(item)}
               className={`
                 ${striped && idx % 2 === 1 ? 'bg-gray-50' : 'bg-white'}
-                ${hoverable ? 'hover:bg-blue-50 transition-colors' : ''}
+                ${hoverable ? 'hover:bg-indigo-50 transition-colors' : ''}
                 ${onRowClick ? 'cursor-pointer' : ''}
               `}
             >

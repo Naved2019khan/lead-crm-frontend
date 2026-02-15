@@ -1,19 +1,21 @@
-import { axiosServer } from "@/utils/axiosInstance";
+"use server";
 
+import { axiosServer } from "@/utils/axiosInstance";
+import { revalidatePath } from "next/cache";
 
 const CRM_ENDPOINT = {
-    createLead : "/agency/create-agency-lead",
-    getALLLead : "/agency/get-all-agency-leads",
-    getLeadById : "/agency/get-agency-lead/",
-    updateLead : "/agency/update-agency-lead"
+  createLead: "/agency/create-agency-lead",
+  getALLLead: "/agency/get-all-agency-leads",
+  getLeadById: "/agency/get-agency-lead/",
+  updateLead: "/agency/update-agency-lead"
 }
 
-export const createNewLead = async (data) => {
+export const createNewLead = async (data: any) => {
   try {
     const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post(CRM_ENDPOINT.createLead,data);
+    const response = await axiosInstance.post(CRM_ENDPOINT.createLead, data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw error;
   }
 };
@@ -23,7 +25,7 @@ export const getALLLead = async () => {
     const axiosInstance = await axiosServer();
     const response = await axiosInstance.get(CRM_ENDPOINT.getALLLead);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw error;
   }
 };
@@ -31,19 +33,23 @@ export const getALLLead = async () => {
 export const getLeadById = async (siteId: string) => {
   try {
     const axiosInstance = await axiosServer();
-    const response = await axiosInstance.get(CRM_ENDPOINT.getLeadById+ "/" + siteId);
+    const response = await axiosInstance.get(CRM_ENDPOINT.getLeadById + "/" + siteId);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw error;
   }
 };
 
-export const updateLead = async (id: string, data) => {
+export const updateLead = async (id: string, data: any) => {
   try {
     const axiosInstance = await axiosServer();
-    const response = await axiosInstance.put(`${CRM_ENDPOINT.updateLead}/${id}`,data);
+    const response = await axiosInstance.put(`${CRM_ENDPOINT.updateLead}/${id}`, data);
+
+    // Refresh the leads list cache
+    revalidatePath("/dashboard/leads");
+
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw error;
   }
 };

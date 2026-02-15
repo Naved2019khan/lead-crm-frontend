@@ -52,7 +52,7 @@ const EmailSubscriptionListing = async () => {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <button className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+                                        <button className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
                                             View Details
                                         </button>
                                     </td>

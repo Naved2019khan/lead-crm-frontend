@@ -1,33 +1,31 @@
 import React from "react";
 type SuccessCardProps = {
-    isOpen?: boolean,
-    title?: string,
-    description?: string,
-    onContinue?: () => void
+  isOpen?: boolean,
+  title?: string,
+  description?: string,
+  onContinue?: () => void
 };
 
-export default function SuccessCard({ isOpen = false,title = "success",description = "your submission has been received",onContinue}:SuccessCardProps) {
-  if(!isOpen) return null
+export default function SuccessCard({ isOpen = false, title = "Success!", description = "Your changes have been saved successfully.", onContinue }: SuccessCardProps) {
+  if (!isOpen) return null;
   return (
-      <div className="min-w-sm w-full bg-white/70 backdrop-blur-lg rounded-2xl shadow-xl p-6 text-center animate-fadeIn">
-        
-        <div className="text-6xl mb-4">🎉</div>
+    <div className="min-w-[320px] max-w-sm w-full bg-white rounded-3xl shadow-2xl p-8 text-center animate-in zoom-in-95 duration-300">
+      <div className="text-6xl mb-6">✨</div>
 
-        <h1 className="text-2xl first-letter:uppercase font-semibold text-gray-800">
-          {title}
-        </h1>
+      <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+        {title}
+      </h1>
 
-        <p className="first-letter:uppercase text-gray-600 mt-2">
-          {description}
-        </p>
+      <p className="text-gray-500 mt-3 font-medium leading-relaxed">
+        {description}
+      </p>
 
-        <button
+      <button
         onClick={onContinue}
-          className="mt-6 px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all"
-        >
-          Continue
-        </button>
-
-      </div>
+        className="mt-8 w-full py-3.5 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 active:scale-[0.98] uppercase tracking-widest text-xs"
+      >
+        Continue
+      </button>
+    </div>
   );
 }

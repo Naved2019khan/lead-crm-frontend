@@ -1,4 +1,4 @@
-'use client'; // If using Next.js App Router
+'use client';
 
 import { X } from "lucide-react";
 import { useEffect } from "react";
@@ -11,30 +11,24 @@ interface ModalProps {
 }
 
 export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
-  // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-
-    // Cleanup on unmount
     return () => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
 
-  // Allow closing with Escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
-
     if (isOpen) {
       window.addEventListener('keydown', handleEsc);
     }
-
     return () => {
       window.removeEventListener('keydown', handleEsc);
     };
@@ -43,16 +37,18 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 overflow-hidden">
+      {/* Backdrop with blur */}
       <div
-        className="absolute inset-0 bg-black/10 transition-opacity animate-in fade-in duration-200"
+        className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-300"
         onClick={onClose}
         aria-hidden="true"
       />
-        <div className="relative  overflow-y-auto">
-          {children}
-        </div>
+
+      {/* Modal Content Wrapper - Clean and transparent to let children define their shape */}
+      <div className="relative w-full max-w-5xl animate-in zoom-in-95 fade-in duration-300 overflow-visible flex items-center justify-center px-4">
+        {children}
+      </div>
     </div>
   );
 };

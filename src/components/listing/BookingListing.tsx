@@ -63,7 +63,7 @@ const BookingListing = ({ flight }: { flight: any }) => {
       </td>
       <td className="px-4 py-6">
         <Link href={`manual-booking/${flight._id}`}
-          className="text-sm  bg-green-600 shadow-2xl text-white  hover:bg-green-900   px-4 py-2 rounded-md">
+          className="text-sm bg-indigo-600 shadow-xl shadow-indigo-100 text-white hover:bg-indigo-700 px-4 py-2 rounded-lg font-bold transition-all">
           View
         </Link>
       </td>
@@ -103,7 +103,7 @@ const BookingListing = ({ flight }: { flight: any }) => {
             <div className="flex items-center gap-2">
               <span className={`text-xs font-medium ${tripTypeColor(+flight?.trip?.tripType)} px-2 py-0.5 rounded`}>
                 {flight?.trip?.tripType == 2 ? "Round Trip" : "One Way"}
-                
+
               </span>
               <span className="text-xs text-slate-500">{TRAVEL_CLASS[flight?.trip?.cabinClass]}</span>
             </div>
@@ -155,7 +155,7 @@ const BookingListing = ({ flight }: { flight: any }) => {
 
             <div className="flex flex-col items-center px-2">
               <span className="text-xs text-gray-500">Duration</span>
-              <span className="text-sm font-medium text-blue-600">
+              <span className="text-sm font-medium text-indigo-600">
                 {/* {estTime} */}
               </span>
             </div>
@@ -331,13 +331,13 @@ const statusColor = (s: any) => {
 const bookingStatus = (s: any) => {
   switch (s) {
     case "Ready":
-      return "bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-medium text-xs";
+      return "bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-bold text-[10px] uppercase tracking-wider";
     case "Pending":
-      return "bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-md font-medium text-xs";
+      return "bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-md font-bold text-[10px] uppercase tracking-wider";
     case "Cancelled":
-      return "bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-md font-medium text-xs";
+      return "bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-md font-bold text-[10px] uppercase tracking-wider";
     default:
-      return "bg-gray-50 text-gray-600 border border-gray-200 px-2.5 py-1 rounded-md font-medium text-xs";
+      return "bg-slate-50 text-slate-600 border border-slate-200 px-2.5 py-1 rounded-md font-bold text-[10px] uppercase tracking-wider";
   }
 };
 

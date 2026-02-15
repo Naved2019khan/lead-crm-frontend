@@ -79,7 +79,7 @@ export default function Page() {
       sortable: true,
       render: (user) => (
         <div className="flex items-center">
-          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
+          <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
             {user.name.charAt(0)}
           </div>
           <span className="font-medium">{user.name}</span>

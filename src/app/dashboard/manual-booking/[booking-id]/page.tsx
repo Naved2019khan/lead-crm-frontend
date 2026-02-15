@@ -19,12 +19,18 @@ import PassengerList from "@/components/section/manualBooking/PassangerInfoCard"
 import BookingHistoryTimeline from "@/components/section/manualBooking/BookingHistoryTimeline";
 import TripCard from "@/components/section/manualBooking/TripCard";
 
+interface Tab {
+  id: number;
+  label: string;
+  icon: React.ReactNode;
+}
+
 const listing = [
   <FlightBookingForm key={0} />,
-  <FareCard  key={1}/>,
-  <PassengerList  key={2}/>,
-  <TripCard  key={3}/>,
-  <BookingHistoryTimeline key={4}/>,
+  <FareCard key={1} />,
+  <PassengerList key={2} />,
+  <TripCard key={3} />,
+  <BookingHistoryTimeline key={4} />,
 ];
 
 const TABS: Tab[] = [
@@ -62,7 +68,7 @@ const Page = () => {
   const dispatch = useDispatch();
 
 
-  const fetchBookingData = async (id) => {
+  const fetchBookingData = async (id: string | string[]) => {
     const response = await getManualBookingsById(id);
     dispatch(setPageData(response.data));
   };
@@ -73,7 +79,7 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="bg-blue-50 ">
+    <div className="bg-slate-50 ">
       <Tabbar componentList={listing} TABS={TABS} />
     </div>
   );
@@ -97,15 +103,15 @@ function InfantPanel() {
 }
 
 function ToddlerPanel() {
-  const flightData = useSelector((state) => state.pageDataSlice);
+  const flightData = useSelector((state: any) => state.pageDataSlice);
   return (
     <div>
       <h3 className="text-lg font-semibold mb-2"></h3>
-     <pre>
+      <pre>
         <code>
-        {JSON.stringify(flightData, null, 2) }
+          {JSON.stringify(flightData, null, 2)}
         </code>
-     </pre>
+      </pre>
     </div>
   );
 }

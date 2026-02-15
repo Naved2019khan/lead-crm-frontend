@@ -20,9 +20,9 @@ export default function Header() {
 
         {/* Nav Links */}
         <div className="flex items-center gap-6">
-          <Link href="/" className="hover:text-blue-600">Home</Link>
-          <Link href="/about" className="hover:text-blue-600">About</Link>
-          <Link href="/blog" className="hover:text-blue-600">Blog</Link>
+          <Link href="/" className="hover:text-indigo-600">Home</Link>
+          <Link href="/about" className="hover:text-indigo-600">About</Link>
+          <Link href="/blog" className="hover:text-indigo-600">Blog</Link>
         </div>
         
         <div className="space-x-2">

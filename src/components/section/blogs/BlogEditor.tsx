@@ -6,17 +6,17 @@ import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 const fallback = {
-    title: '',
-    slug: '',
-    metaTitle: '',
-    metaDescription: '',
-    keywords: '',
-    author: '',
-    category: '',
-    featuredImage: '',
-    content: '',
-    status: 'draft'
-  }
+  title: '',
+  slug: '',
+  metaTitle: '',
+  metaDescription: '',
+  keywords: '',
+  author: '',
+  category: '',
+  featuredImage: '',
+  content: '',
+  status: 'draft'
+}
 
 export default function BlogEditor({ initialData = fallback }) {
   const [formData, setFormData] = useState(initialData);
@@ -24,7 +24,7 @@ export default function BlogEditor({ initialData = fallback }) {
 
   const [preview, setPreview] = useState(false);
 
-  const handleInput = (e) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -41,14 +41,16 @@ export default function BlogEditor({ initialData = fallback }) {
     }
   };
 
-  const insertFormatting = (format) => {
-    const textarea = document.getElementById('content-editor');
+  const insertFormatting = (format: string) => {
+    const textarea = document.getElementById('content-editor') as HTMLTextAreaElement;
+    if (!textarea) return;
+
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = formData.content.substring(start, end);
     let newText = '';
 
-    switch(format) {
+    switch (format) {
       case 'h1':
         newText = `# ${selectedText || 'Heading 1'}`;
         break;
@@ -80,21 +82,21 @@ export default function BlogEditor({ initialData = fallback }) {
 
     const newContent = formData.content.substring(0, start) + newText + formData.content.substring(end);
     setFormData(prev => ({ ...prev, content: newContent }));
-    
+
     setTimeout(() => {
       textarea.focus();
       textarea.setSelectionRange(start + newText.length, start + newText.length);
     }, 0);
   };
 
-  const renderMarkdown = (text) => {
+  const renderMarkdown = (text: string) => {
     return text
       .replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mb-4">$1</h1>')
       .replace(/^## (.*$)/gim, '<h2 class="text-2xl font-bold mb-3">$1</h2>')
       .replace(/^### (.*$)/gim, '<h3 class="text-xl font-bold mb-2">$1</h3>')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-blue-600 underline">$1</a>')
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-indigo-600 underline">$1</a>')
       .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto my-4" />')
       .replace(/^\d+\.\s(.*)$/gim, '<li class="ml-6">$1</li>')
       .replace(/^-\s(.*)$/gim, '<li class="ml-6 list-disc">$1</li>')
@@ -102,18 +104,34 @@ export default function BlogEditor({ initialData = fallback }) {
   };
 
   const handleSave = async () => {
-    const blogData = {
-      ...formData,
-      siteId : parseInt(siteId),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    // console.log(blogData)
+    try {
+      const blogData: any = {
+        ...formData,
+        siteId: siteId,
+        updatedAt: new Date().toISOString()
+      };
 
-    const response = await blogAPI.create(blogData);
-    
-    toast.success('Blog post saved! Check console for data.');
-    // alert('Blog post saved! Check console for data.');
+      if (!blogData.createdAt) {
+        blogData.createdAt = new Date().toISOString();
+      }
+
+      let response;
+      if (blogData._id || blogData.id) {
+        // Update existing blog
+        const id = blogData._id || blogData.id;
+        response = await blogAPI.update(id, blogData);
+        toast.success('Blog post updated successfully!');
+      } else {
+        // Create new blog
+        response = await blogAPI.create(blogData);
+        toast.success('Blog post created successfully!');
+      }
+
+      console.log("Blog operation response:", response);
+    } catch (error) {
+      console.error("Save operation failed:", error);
+      toast.error('Failed to save blog post. Repository synchronization error.');
+    }
   };
 
   return (
@@ -121,16 +139,16 @@ export default function BlogEditor({ initialData = fallback }) {
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+          <div className="bg-gradient-to-r from-indigo-600 to-indigo-600 px-6 py-4">
             <h1 className="text-2xl font-bold text-white">Professional Blog Editor</h1>
-            <p className="text-blue-100 text-sm mt-1">Create SEO-optimized blog content</p>
+            <p className="text-indigo-100 text-sm mt-1">Create SEO-optimized blog content</p>
           </div>
 
           <div className="p-6">
             {/* SEO Meta Section */}
             <div className="mb-8">
               <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-sm mr-2">SEO</span>
+                <span className="bg-indigo-100 text-indigo-600 px-2 py-1 rounded text-sm mr-2">SEO</span>
                 Meta Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -143,7 +161,7 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="title"
                     value={formData.title}
                     onChange={handleInput}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Enter your blog title"
                   />
                 </div>
@@ -157,7 +175,7 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="slug"
                     value={formData.slug}
                     onChange={handleInput}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="blog-post-url"
                   />
                 </div>
@@ -171,11 +189,11 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="metaTitle"
                     value={formData.metaTitle}
                     onChange={handleInput}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Optimized title for search engines"
-                    maxLength="60"
+                    maxLength={60}
                   />
-                  <span className="text-xs text-gray-500">{formData.metaTitle.length}/60 characters</span>
+                  <span className="text-xs text-gray-500">{(formData.metaTitle as any).length}/60 characters</span>
                 </div>
 
                 <div>
@@ -187,7 +205,7 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="keywords"
                     value={formData.keywords}
                     onChange={handleInput}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="react, nextjs, web development"
                   />
                 </div>
@@ -200,12 +218,12 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="metaDescription"
                     value={formData.metaDescription}
                     onChange={handleInput}
-                    rows="2"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    rows={2}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Brief description for search results"
-                    maxLength="160"
+                    maxLength={160}
                   />
-                  <span className="text-xs text-gray-500">{formData.metaDescription.length}/160 characters</span>
+                  <span className="text-xs text-gray-500">{(formData.metaDescription as any).length}/160 characters</span>
                 </div>
               </div>
             </div>
@@ -223,7 +241,7 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="author"
                     value={formData.author}
                     onChange={handleInput}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="John Doe"
                   />
                 </div>
@@ -236,7 +254,7 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="category"
                     value={formData.category}
                     onChange={handleInput}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="">Select category</option>
                     <option value="technology">Technology</option>
@@ -255,7 +273,7 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="status"
                     value={formData.status}
                     onChange={handleInput}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
@@ -272,7 +290,7 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="featuredImage"
                     value={formData.featuredImage}
                     onChange={handleInput}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="https://example.com/image.jpg"
                   />
                 </div>
@@ -333,8 +351,8 @@ export default function BlogEditor({ initialData = fallback }) {
                     name="content"
                     value={formData.content}
                     onChange={handleInput}
-                    rows="16"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+                    rows={16}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm"
                     placeholder="Write your blog content here... Use markdown formatting!"
                   />
                 </>
@@ -351,7 +369,7 @@ export default function BlogEditor({ initialData = fallback }) {
                     {formData.category && <span>• {formData.category}</span>}
                     <span>• {new Date().toLocaleDateString()}</span>
                   </div>
-                  <div 
+                  <div
                     className="prose max-w-none"
                     dangerouslySetInnerHTML={{ __html: renderMarkdown(formData.content || 'Your content preview will appear here...') }}
                   />
@@ -363,8 +381,8 @@ export default function BlogEditor({ initialData = fallback }) {
             <div className="flex gap-4 justify-end pt-4 border-t border-gray-200">
               <button
                 onClick={() => setFormData({
-                  title: '', slug: '', metaTitle: '', metaDescription: '', 
-                  keywords: '', author: '', category: '', featuredImage: '', 
+                  title: '', slug: '', metaTitle: '', metaDescription: '',
+                  keywords: '', author: '', category: '', featuredImage: '',
                   content: '', status: 'draft'
                 })}
                 className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
@@ -373,7 +391,7 @@ export default function BlogEditor({ initialData = fallback }) {
               </button>
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
               >
                 <Save size={18} />
                 Save Blog Post
@@ -386,7 +404,7 @@ export default function BlogEditor({ initialData = fallback }) {
         <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Google Search Preview</h3>
           <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-            <div className="text-blue-600 text-xl font-medium mb-1">
+            <div className="text-indigo-600 text-xl font-medium mb-1">
               {formData.metaTitle || formData.title || 'Your Blog Title'}
             </div>
             <div className="text-green-700 text-sm mb-2">

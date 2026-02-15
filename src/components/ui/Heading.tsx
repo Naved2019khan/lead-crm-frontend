@@ -45,9 +45,9 @@ export const Heading: React.FC<HeadingProps> = ({
 
   const variantStyles = {
     default: 'text-gray-900',
-    gradient: 'bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent',
-    underline: 'text-gray-900 border-b-4 border-blue-500 pb-2 inline-block',
-    accent: 'text-gray-900 relative before:absolute before:bottom-0 before:left-0 before:w-16 before:h-1 before:bg-blue-500 pb-3',
+    gradient: 'bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent',
+    underline: 'text-gray-900 border-b-4 border-indigo-500 pb-2 inline-block',
+    accent: 'text-gray-900 relative before:absolute before:bottom-0 before:left-0 before:w-16 before:h-1 before:bg-indigo-500 pb-3',
   };
 
   const subtitleStyles = {

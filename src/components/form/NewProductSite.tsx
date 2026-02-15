@@ -122,7 +122,7 @@ export const NewProductSite: React.FC<NewProductSiteProps> = ({
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border"
             />
           ) : (
-            <p className="mt-1 text-lg text-blue-600 font-medium">
+            <p className="mt-1 text-lg text-indigo-600 font-medium">
               {formData.siteDomain}
             </p>
           )}

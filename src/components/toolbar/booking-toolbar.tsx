@@ -47,7 +47,7 @@ export default function BookingTableToolbar() {
         </div>
 
         <div className="flex gap-2 self-center">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-md">Apply</button>
+          <button className="bg-indigo-600 text-white px-4 py-2 rounded-md">Apply</button>
           <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md">Reset</button>
           <button
             className="bg-gray-100 px-2 py-2 rounded-md border"

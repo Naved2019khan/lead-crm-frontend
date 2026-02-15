@@ -66,7 +66,7 @@ function PassengerInfoCard({ passenger, onSave }) {
     <div className="relative bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition p-4">
       
       {/* Accent bar */}
-      <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-blue-500 to-purple-500 rounded-l-xl" />
+      <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-l-xl" />
 
       {/* Header */}
       <div className="flex justify-between items-start mb-4 pl-2">

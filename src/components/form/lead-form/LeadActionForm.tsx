@@ -5,6 +5,7 @@ import { LeadEditForm } from "./LeadEditForm";
 import LeadStaticFrom from "./LeadStaticFrom";
 
 interface Lead {
+  _id?: string;
   id: number;
   fullName: string;
   email: string;
@@ -13,27 +14,37 @@ interface Lead {
   status: "new" | "contacted" | "qualified" | "lost";
   value: string;
   source: string;
-  createdAt: string;
+  appointmentDate: string;
   location: string;
-  notes: [{ body: string; date: Date }];
+  notes: any;
 }
 
-export const LeadAction = ({ selectedLead, onClose }) => {
-  const [isEdit, setIsEdit] = useState(false);
-  const handleEdit = (value) => {
-    setIsEdit(value);
-  };
+interface LeadActionProps {
+  selectedLead: Lead;
+  onClose: () => void;
+}
 
-  if (isEdit)
-    return <LeadEditForm selectedLead={selectedLead} onEdit={handleEdit} onClose={onClose} />;
+export const LeadAction = ({ selectedLead, onClose }: LeadActionProps) => {
+  const [mode, setMode] = useState<"view" | "edit">("view");
+
+  if (mode === "edit") {
+    return (
+      <LeadEditForm
+        selectedLead={selectedLead}
+        onEdit={(val) => !val && setMode("view")}
+        onClose={onClose}
+      />
+    );
+  }
 
   return (
-    <LeadStaticFrom key={"second"} selectedLead={selectedLead} onEdit={() => setIsEdit(true)} onClose={onClose}
+    <LeadStaticFrom
+      selectedLead={selectedLead as any}
+      onEdit={() => setMode("edit")}
+      onClose={onClose}
     />
   );
 };
 
-
-
-
 export default LeadAction;
+

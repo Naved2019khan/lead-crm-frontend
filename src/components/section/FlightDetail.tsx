@@ -59,11 +59,11 @@ export const FlightDetail = () => {
   return (
     <div className="mx-auto max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white">
+      <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 p-6 text-white">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-5">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold">Flight Booking</h1>
-            <p className="text-blue-100 text-sm mt-1">
+            <p className="text-indigo-100 text-sm mt-1">
               Booking Reference: <span className="font-mono">{bookingData.bookingRef}</span>
             </p>
           </div>
@@ -78,7 +78,7 @@ export const FlightDetail = () => {
             <div className="text-xl font-bold bg-white text-gray-800 px-3 py-1 rounded-lg inline-block">
               {bookingData.departure.airport}
             </div>
-            <p className="text-blue-100 text-sm">{bookingData.departure.city}</p>
+            <p className="text-indigo-100 text-sm">{bookingData.departure.city}</p>
             <div className="flex items-center justify-center gap-1 text-xs mt-1">
               <Calendar className="w-3 h-3" />
               {bookingData.departure.date}
@@ -90,15 +90,15 @@ export const FlightDetail = () => {
 
           <div className="my-4 sm:my-0 flex flex-col items-center">
             <Plane className="w-6 h-6 text-white transform rotate-90" />
-            <span className="text-xs mt-1 text-blue-100">{bookingData.duration}</span>
-            <span className="text-xs mt-0.5 text-blue-200">{bookingData.flightNumber}</span>
+            <span className="text-xs mt-1 text-indigo-100">{bookingData.duration}</span>
+            <span className="text-xs mt-0.5 text-indigo-200">{bookingData.flightNumber}</span>
           </div>
 
           <div className="text-center space-y-1">
             <div className="text-xl font-bold bg-white text-gray-800 px-3 py-1 rounded-lg inline-block">
               {bookingData.arrival.airport}
             </div>
-            <p className="text-blue-100 text-sm">{bookingData.arrival.city}</p>
+            <p className="text-indigo-100 text-sm">{bookingData.arrival.city}</p>
             <div className="flex items-center justify-center gap-1 text-xs mt-1">
               <Calendar className="w-3 h-3" />
               {bookingData.arrival.date}
@@ -125,7 +125,7 @@ export const FlightDetail = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-4 px-4 text-center font-medium transition-colors flex flex-col items-center ${
                   activeTab === tab.id
-                    ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                    ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -177,7 +177,7 @@ function TransactionCard({ bookingData }: { bookingData: any }) {
         {/* Payment Summary */}
         <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-blue-600" />
+            <CreditCard className="w-5 h-5 text-indigo-600" />
             Payment Summary
           </h3>
           <div className="space-y-3">
@@ -214,7 +214,7 @@ function TransactionCard({ bookingData }: { bookingData: any }) {
             </div>
 
             <hr className="my-3 border-gray-300" />
-            <div className="flex justify-between text-lg font-bold text-blue-700">
+            <div className="flex justify-between text-lg font-bold text-indigo-700">
               <span>Total</span>
               <span>${totalAmount.toFixed(2)}</span>
             </div>
@@ -234,12 +234,12 @@ function TransactionCard({ bookingData }: { bookingData: any }) {
             </div>
           </div>
 
-          <div className="mt-6 bg-blue-50 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="mt-6 bg-indigo-50 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
-              <h4 className="font-semibold text-blue-900">Need a receipt?</h4>
-              <p className="text-sm text-blue-700">Download your payment confirmation</p>
+              <h4 className="font-semibold text-indigo-900">Need a receipt?</h4>
+              <p className="text-sm text-indigo-700">Download your payment confirmation</p>
             </div>
-            <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition whitespace-nowrap">
+            <button className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition whitespace-nowrap">
               Download Receipt
             </button>
           </div>
@@ -299,7 +299,7 @@ const InfoCard = ({
 }) => (
   <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
     <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-      <Icon className="w-5 h-5 text-blue-600" />
+      <Icon className="w-5 h-5 text-indigo-600" />
       {title}
     </h3>
     <div className="space-y-3">{children}</div>
@@ -369,7 +369,7 @@ const AgentBookingCard: React.FC<AgentBookingCardProps> = ({
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Comment</label>
         <textarea
-          className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           rows={3}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -404,7 +404,7 @@ const AgentBookingCard: React.FC<AgentBookingCardProps> = ({
           id={`proceed-${bookingId}`}
           checked={proceeded}
           onChange={() => setProceeded(!proceeded)}
-          className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
+          className="h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500"
         />
         <label htmlFor={`proceed-${bookingId}`} className="text-sm text-gray-700">
           Mark as Proceeded
@@ -413,7 +413,7 @@ const AgentBookingCard: React.FC<AgentBookingCardProps> = ({
 
       <button
         onClick={handleSave}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg transition font-medium"
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg transition font-medium"
       >
         Save Changes
       </button>

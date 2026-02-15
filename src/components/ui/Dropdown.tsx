@@ -5,7 +5,20 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 import { Modal } from './Modal';
 import { ModalPopup } from './ModalPopup';
 
-export const Dropdown = ({ options,label, value, onChange, placeholder = "Select an option" }) => {
+interface Option {
+  label: string;
+  value: string;
+}
+
+interface DropdownProps {
+  options: Option[];
+  label?: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
+export const Dropdown = ({ options, label, value, onChange, placeholder = "Select an option" }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   useOutsideClick(dropdownRef, () => setIsOpen(false));
@@ -23,8 +36,8 @@ export const Dropdown = ({ options,label, value, onChange, placeholder = "Select
         <span className={selectedOption ? "text-gray-900" : "text-gray-400"}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
-        <ChevronDown 
-          size={18} 
+        <ChevronDown
+          size={18}
           className={`text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
@@ -34,10 +47,10 @@ export const Dropdown = ({ options,label, value, onChange, placeholder = "Select
           <div className="max-h-60 overflow-y-auto">
             {options.map((option) => (
               <button
-               type='button'
+                type='button'
                 key={option.value}
                 onClick={() => {
-                  onChange(option.value,name);
+                  onChange(option.value);
                   setIsOpen(false);
                 }}
                 className="w-full px-4 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-center justify-between group"
@@ -52,8 +65,8 @@ export const Dropdown = ({ options,label, value, onChange, placeholder = "Select
             ))}
           </div>
         </div>
-        </ModalPopup>
-      
+      </ModalPopup>
+
     </div>
   );
 };

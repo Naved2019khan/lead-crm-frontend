@@ -61,7 +61,7 @@ export default function ProfileDropdown({
             className="w-8 h-8 rounded-full object-cover"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
+          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-semibold">
             {userName.charAt(0).toUpperCase()}
           </div>
         )}

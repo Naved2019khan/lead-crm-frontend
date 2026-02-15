@@ -41,7 +41,7 @@ export default function FareCard() {
       case 'Confirmed': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       case 'Pending': return 'bg-amber-50 text-amber-700 border-amber-200';
       case 'Failed': return 'bg-red-50 text-red-700 border-red-200';
-      case 'Refunded': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'Refunded': return 'bg-indigo-50 text-indigo-700 border-indigo-200';
       default: return 'bg-slate-50 text-slate-700 border-slate-200';
     }
   };
@@ -53,7 +53,7 @@ export default function FareCard() {
           
           {/* Header with gradient accent */}
           <div className="relative bg-slate-900 p-6 pb-8">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
             
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -127,7 +127,7 @@ export default function FareCard() {
                     type="text"
                     value={editData.customer}
                     onChange={(e) => handleChange('customer', e.target.value)}
-                    className="w-full text-slate-900 font-semibold border-2 border-slate-200 rounded-xl px-3 py-2 focus:border-blue-500 focus:outline-none transition-colors"
+                    className="w-full text-slate-900 font-semibold border-2 border-slate-200 rounded-xl px-3 py-2 focus:border-indigo-500 focus:outline-none transition-colors"
                   />
                 ) : (
                   <p className="text-slate-900 font-semibold">{paymentData.customer}</p>
@@ -144,7 +144,7 @@ export default function FareCard() {
                     type="text"
                     value={editData.date}
                     onChange={(e) => handleChange('date', e.target.value)}
-                    className="w-full text-slate-900 font-semibold border-2 border-slate-200 rounded-xl px-3 py-2 focus:border-blue-500 focus:outline-none transition-colors"
+                    className="w-full text-slate-900 font-semibold border-2 border-slate-200 rounded-xl px-3 py-2 focus:border-indigo-500 focus:outline-none transition-colors"
                   />
                 ) : (
                   <p className="text-slate-900 font-semibold">{paymentData.date}</p>
@@ -159,8 +159,8 @@ export default function FareCard() {
             <div className="space-y-4">
               <div className="flex items-center justify-between group">
                 <div className="flex items-center gap-3">
-                  <div className="bg-blue-100 p-2.5 rounded-xl group-hover:scale-110 transition-transform">
-                    <DollarSign className="text-blue-600" size={20} strokeWidth={2} />
+                  <div className="bg-indigo-100 p-2.5 rounded-xl group-hover:scale-110 transition-transform">
+                    <DollarSign className="text-indigo-600" size={20} strokeWidth={2} />
                   </div>
                   <span className="text-slate-700 font-semibold">Total Price</span>
                 </div>
@@ -169,7 +169,7 @@ export default function FareCard() {
                     type="number"
                     value={editData.totalPrice}
                     onChange={(e) => handleChange('totalPrice', parseFloat(e.target.value))}
-                    className="w-28 text-slate-900 font-bold text-right border-2 border-slate-200 rounded-xl px-3 py-2 focus:border-blue-500 focus:outline-none transition-colors"
+                    className="w-28 text-slate-900 font-bold text-right border-2 border-slate-200 rounded-xl px-3 py-2 focus:border-indigo-500 focus:outline-none transition-colors"
                   />
                 ) : (
                   <span className="text-slate-900 font-bold text-lg">{paymentData.currency} {paymentData.totalPrice.toLocaleString()}</span>
