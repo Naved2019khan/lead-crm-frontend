@@ -1,6 +1,5 @@
 import LeadListing from '@/components/listing/LeadListing';
 import { getAllLeads } from '@/services/api/crm';
-import React from 'react';
 
 
 const LeadPage = async () => {

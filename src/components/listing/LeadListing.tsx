@@ -1,9 +1,8 @@
 "use client";
 import { Eye } from "lucide-react";
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal } from "../ui/Modal";
-import { getAllLeads } from '@/services/api/crm';
 import LeadAction from "../form/lead-form/LeadActionForm";
 import { updateSiteAction } from "@/app/actions/updateSiteAction";
 
@@ -24,7 +23,6 @@ interface Lead {
 const LeadListing = ({leads} : { leads: Lead[] }) => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const handleCloseModal = () => {
-    // fetchLeads();
     updateSiteAction()
     setSelectedLead(null);
   };
