@@ -1,67 +1,28 @@
 "use server"
-import { axiosServer } from "@/utils/axiosInstance";
+import { serverFetch } from "@/utils/serverFetch";
 import { errorHandler } from "@/utils/errorHandler";
 import { revalidatePath } from "next/cache";
 const FLIGHT_BOOKING_ENDPOINT = {
     convertFlightLead : "/booking/convert-flight-lead",
 }
 
-export const createBooking = async (data) => {
-  try {
-    const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post("/booking/create-booking",data);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+export const createBooking = async (data: any) => {
+  return await serverFetch("/booking/create-booking", { method: "POST", data });
 };
 
-export const updateBooking = async (data) => {
-  try {
-       const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post("/booking/update-booking/" + data._id,
-      data
-    );
-    return response.data;
-  } catch (error) {
-      errorHandler(error)
-    throw error;
-  }
+export const updateBooking = async (data: any) => {
+  return await serverFetch("/booking/update-booking/" + data._id, { method: "POST", data });
 }
 export const getManualBookings = async () => {
-  try {
-       const axiosInstance = await axiosServer();
-    const response = await axiosInstance.get(
-      "/booking/get-all-flight-booking"
-    );
-    return response.data;
-  } catch (error) {
-    errorHandler(error)
-  }
+  return await serverFetch("/booking/get-all-flight-booking");
 };
-export const getManualBookingsById = async (params) => {
-  try {
-       const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post(
-      `/booking/get-booking/${params}`
-    );
-    return response.data;
-  } catch (error) {
-    errorHandler(error)
-  }
+export const getManualBookingsById = async (params: any) => {
+  return await serverFetch(`/booking/get-booking/${params}`, { method: "POST" });
 };
 
 
-export const convertLeadToTicket = async (data) => {
-  try {
-       const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post(
-      FLIGHT_BOOKING_ENDPOINT.convertFlightLead+"/"+data._id, {}
-    );
-    revalidatePath("/");
-    return response.data;
-  } catch (error) {
-    errorHandler(error)
-  } finally {
-  }
+export const convertLeadToTicket = async (data: any) => {
+  const response = await serverFetch(FLIGHT_BOOKING_ENDPOINT.convertFlightLead+"/"+data._id, { method: "POST", data: {} });
+  revalidatePath("/");
+  return response;
 };

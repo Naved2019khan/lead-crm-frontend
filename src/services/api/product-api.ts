@@ -1,5 +1,5 @@
 
-import { axiosServer } from "@/utils/axiosInstance";
+import { serverFetch } from "@/utils/serverFetch";
 import axiosClient from "../axiosClient";
 
 
@@ -12,27 +12,13 @@ import axiosClient from "../axiosClient";
  * @throws {Error} If there is an error making the request.
  */
 export const getAgencySites = async () => {
-  try {
-     const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post("/product/get-all-agency",{});
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  return await serverFetch("/product/get-all-agency", { method: "POST", data: {} });
 };
 
 
 
 export const getFlightSites = async () => {
-  try {
-     const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post(
-      "/product/get-all-flight-site"
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  return await serverFetch("/product/get-all-flight-site", { method: "POST" });
 };
 
 

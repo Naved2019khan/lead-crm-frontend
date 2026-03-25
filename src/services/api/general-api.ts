@@ -1,5 +1,5 @@
 
-import { axiosServer } from "@/utils/axiosInstance";
+import { serverFetch } from "@/utils/serverFetch";
 import { errorHandler } from "@/utils/errorHandler";
 const GENERAL_ENDPOINT = {
     getAllEmailSubscribe : "/general/get-all-email-subscribe",
@@ -8,15 +8,7 @@ const GENERAL_ENDPOINT = {
 
 
 export const getAllEmailSubscribe = async () => {
-  try {
-     const axiosInstance = await axiosServer();
-    const response = await axiosInstance.get(
-      GENERAL_ENDPOINT.getAllEmailSubscribe
-    );
-    return response.data;
-  } catch (error) {
-    errorHandler(error)
-  }
+  return await serverFetch(GENERAL_ENDPOINT.getAllEmailSubscribe);
 };
 
 

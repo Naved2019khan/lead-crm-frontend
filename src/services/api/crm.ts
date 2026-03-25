@@ -1,4 +1,4 @@
-import { axiosServer } from "@/utils/axiosInstance";
+import { serverFetch } from "@/utils/serverFetch";
 const CRM_ENDPOINT = {
     getAllLead : "/agency/get-all-agency-leads",
     getLeadById : "/agency/get-agency-lead",
@@ -6,32 +6,14 @@ const CRM_ENDPOINT = {
 }
 
 export const getAllLeads = async () => {
-    try {
-        const axiosInstance = await axiosServer();
-        const response = await axiosInstance.get(CRM_ENDPOINT.getAllLead)
-        return response.data
-    } catch (error) {
-        throw error
-    }
+    return await serverFetch(CRM_ENDPOINT.getAllLead);
 }
 
 
 export const getLeadById = async (leadId: string) => {
-    try {
-        const axiosInstance = await axiosServer();
-        const response = await axiosInstance.get(`${CRM_ENDPOINT.getLeadById}/${leadId}`);
-        return response.data
-    } catch (error) {
-        throw error
-    }
+    return await serverFetch(`${CRM_ENDPOINT.getLeadById}/${leadId}`);
 }
 
 export const updateLead = async (leadId: string, data: any) => {
-    try {
-         const axiosInstance = await axiosServer();
-        const response = await axiosInstance.put(`${CRM_ENDPOINT.updateLead}/${leadId}`, data);
-        return response.data
-    } catch (error) {
-        throw error
-    }
+    return await serverFetch(`${CRM_ENDPOINT.updateLead}/${leadId}`, { method: "PUT", data });
 }

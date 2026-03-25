@@ -1,6 +1,6 @@
 "use server";
 
-import { axiosServer } from "@/utils/axiosInstance";
+import { serverFetch } from "@/utils/serverFetch";
 import { revalidatePath } from "next/cache";
 
 const CRM_ENDPOINT = {
@@ -11,45 +11,20 @@ const CRM_ENDPOINT = {
 }
 
 export const createNewLead = async (data: any) => {
-  try {
-    const axiosInstance = await axiosServer();
-    const response = await axiosInstance.post(CRM_ENDPOINT.createLead, data);
-    return response.data;
-  } catch (error: any) {
-    throw error;
-  }
+  return await serverFetch(CRM_ENDPOINT.createLead, { method: "POST", data });
 };
 
 export const getALLLead = async () => {
-  try {
-    const axiosInstance = await axiosServer();
-    const response = await axiosInstance.get(CRM_ENDPOINT.getALLLead);
-    return response.data;
-  } catch (error: any) {
-    throw error;
-  }
+  return await serverFetch(CRM_ENDPOINT.getALLLead);
 };
 
 export const getLeadById = async (siteId: string) => {
-  try {
-    const axiosInstance = await axiosServer();
-    const response = await axiosInstance.get(CRM_ENDPOINT.getLeadById + "/" + siteId);
-    return response.data;
-  } catch (error: any) {
-    throw error;
-  }
+  return await serverFetch(CRM_ENDPOINT.getLeadById + "/" + siteId);
 };
 
 export const updateLead = async (id: string, data: any) => {
-  try {
-    const axiosInstance = await axiosServer();
-    const response = await axiosInstance.put(`${CRM_ENDPOINT.updateLead}/${id}`, data);
-
-    // Refresh the leads list cache
-    revalidatePath("/dashboard/leads");
-
-    return response.data;
-  } catch (error: any) {
-    throw error;
-  }
+  const response = await serverFetch(`${CRM_ENDPOINT.updateLead}/${id}`, { method: "PUT", data });
+  // Refresh the leads list cache
+  revalidatePath("/dashboard/leads");
+  return response;
 };
