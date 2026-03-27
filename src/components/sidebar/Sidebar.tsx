@@ -4,14 +4,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { X, ChevronDown, LogOut, Building2 } from "lucide-react";
-import { NAVIGATION_ITEMS } from "@/constants/navigation";
-
-export interface NavItem {
-  name: string;
-  icon: React.ReactNode;
-  href: string;
-  children?: NavItem[];
-}
+import { NAVIGATION_ITEMS, NavItem } from "@/constants/navigation";
 
 interface NavItemProps {
   item: NavItem;
@@ -50,64 +43,105 @@ const NavItemComponent = ({ item, onClick }: NavItemProps) => {
     }
   };
 
+  // Extract dynamic styles with fallbacks
+  const bgGradient = item.gradient ? `bg-gradient-to-br ${item.gradient}` : "bg-indigo-600";
+  const glowShadow = item.shadow ? item.shadow : "shadow-indigo-500/30";
+
   return (
-    <div className="mb-0.5">
+    <div className="mb-1.5">
       <Link
         href={item.href}
         onClick={handleClick}
         className={`
-          group relative flex items-center justify-between gap-3 px-3 py-2 text-sm font-bold rounded-xl transition-all duration-200
+          group relative flex items-center justify-between gap-3 px-3 py-2.5 text-sm font-semibold rounded-2xl transition-all duration-300 ease-out overflow-hidden
           ${active
-            ? "bg-indigo-50/50 text-indigo-600"
-            : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+            ? "text-gray-900 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100"
+            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50/80 border border-transparent"
           }
         `}
       >
-        <div className="flex items-center gap-3">
+        {/* Subtle active background glow */}
+        {active && (
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-50/50 to-transparent pointer-events-none" />
+        )}
+
+        <div className="relative flex items-center gap-3 z-10 w-full">
+          {/* Icon Container with beautiful gradients */}
           <div className={`
-            flex items-center justify-center w-8 h-8 rounded-lg transition-all
-            ${active ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-gray-100 text-gray-400 group-hover:bg-white group-hover:text-indigo-500"}
+            relative flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-300
+            ${active 
+              ? `${bgGradient} text-white shadow-lg ${glowShadow} scale-100 rotate-0` 
+              : "bg-gray-100 text-gray-400 group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-white group-hover:shadow-md"
+            }
           `}>
-            {item.icon}
+            {/* If hovering and inactive, apply a subtle gradient to the icon text using CSS wizardry */}
+            <div className={`transition-all duration-300 ${!active && "group-hover:text-indigo-500"}`}>
+              {item.icon}
+            </div>
+            
+            {/* Active shine effect */}
+            {active && (
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-white/20 to-transparent opacity-50" />
+            )}
           </div>
-          <span className="tracking-tight">{item.name}</span>
+
+          <span className={`tracking-wide transition-all duration-300 ${active ? "font-bold" : ""}`}>
+            {item.name}
+          </span>
         </div>
 
         {hasChildren && (
-          <ChevronDown
-            className={`w-3.5 h-3.5 transition-transform ${isExpanded ? "rotate-180" : ""
-              } ${active ? "text-indigo-400" : "text-gray-300"}`}
-          />
+          <div className={`
+            relative z-10 w-6 h-6 flex items-center justify-center rounded-full transition-all duration-300
+            ${active ? "bg-gray-50 text-gray-900" : "text-gray-300 group-hover:text-gray-500 group-hover:bg-gray-100"}
+          `}>
+            <ChevronDown
+              className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+            />
+          </div>
         )}
+        
+        {/* Animated active indicator bar on the left */}
+        <div className={`
+          absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r-full transition-all duration-300
+          ${active ? `h-8 ${bgGradient}` : "h-0 bg-transparent"}
+        `} />
       </Link>
 
-      {/* Children Items */}
+      {/* Children Items with animated staggering */}
       {hasChildren && (
         <div
           className={`
-            overflow-hidden transition-all duration-300 ease-in-out pl-4
-            ${isExpanded ? "max-h-96 opacity-100 my-1" : "max-h-0 opacity-0"}
+            overflow-hidden transition-all duration-500 ease-in-out pl-4
+            ${isExpanded ? "max-h-96 opacity-100 mt-2" : "max-h-0 opacity-0"}
           `}
         >
-          <div className="border-l border-gray-100 ml-4 py-1">
-            {item.children?.map((child) => {
+          <div className="border-l-[1.5px] border-gray-100/80 ml-4 py-1 space-y-1 relative">
+            {item.children?.map((child, idx) => {
               const childActive = isActive(child.href);
               return (
-                <Link
-                  key={child.name}
-                  href={child.href}
-                  onClick={onClick}
-                  className={`
-                    group flex items-center gap-3 px-4 py-1.5 text-[12px] font-bold transition-all rounded-lg ml-2
-                    ${childActive
-                      ? "text-indigo-600 bg-indigo-50/30"
-                      : "text-gray-400 hover:text-indigo-500 hover:bg-gray-50/50"
-                    }
-                  `}
-                >
-                  <div className={`w-1 h-1 rounded-full transition-all ${childActive ? "bg-indigo-600 scale-125" : "bg-gray-200 group-hover:bg-indigo-300"}`} />
-                  {child.name}
-                </Link>
+                <div key={child.name} className="relative">
+                  {/* Connecting lines for children */}
+                  <div className="absolute w-3 h-[1.5px] bg-gray-100/80 -left-[1.5px] top-1/2 -translate-y-1/2" />
+                  
+                  <Link
+                    href={child.href}
+                    onClick={onClick}
+                    className={`
+                      group flex items-center gap-3 px-4 py-2 text-[13px] font-semibold transition-all duration-300 rounded-xl ml-3 relative
+                      ${childActive
+                        ? "text-gray-900 bg-gray-50 shadow-sm border border-gray-100"
+                        : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 border border-transparent"
+                      }
+                    `}
+                  >
+                    <div className={`
+                      w-1.5 h-1.5 rounded-full transition-all duration-300 flex-shrink-0
+                      ${childActive ? `${bgGradient} scale-125 shadow-sm` : "bg-gray-200 group-hover:bg-indigo-300 group-hover:scale-110"}
+                    `} />
+                    <span className="truncate">{child.name}</span>
+                  </Link>
+                </div>
               );
             })}
           </div>
@@ -117,17 +151,31 @@ const NavItemComponent = ({ item, onClick }: NavItemProps) => {
   );
 };
 
-export const UserProfile = () => {
-  let session;
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/redux/slice/auth-slice";
+import { useRouter } from "next/navigation";
 
-  const userInitials = session?.user?.name
+export const UserProfile = () => {
+  const user = useSelector((state: any) => state.authSlice?.user);
+  const dispatch = useDispatch<any>();
+  const router = useRouter();
+
+  const userInitials = user?.name
     ?.split(" ")
-    .map((n) => n[0])
+    .map((n: string) => n[0])
     .slice(0, 2)
     .join("") || "U";
 
-  const userName = session?.user?.name || "Access Interface";
-  const userRole = (session?.user as any)?.role || "Executive Node";
+  const userName = user?.name || "Access Interface";
+  // Just show the first role or "Super Admin"
+  const userRole = user?.isSuperAdmin
+    ? "Super Admin"
+    : (user?.roles?.[0]?.role || "Executive Node");
+
+  const handleLogout = async () => {
+    await dispatch(logout());
+    router.push("/");
+  };
 
   return (
     <div className="mt-auto p-4 border-t border-gray-50">
@@ -145,7 +193,7 @@ export const UserProfile = () => {
           <p className="text-[9px] font-bold text-gray-400 truncate uppercase tracking-widest">{userRole}</p>
         </div>
         <button
-          // onClick={() => signOut()}
+          onClick={handleLogout}
           className="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
         >
           <LogOut className="w-4 h-4" />
@@ -161,6 +209,14 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
+  const user = useSelector((state: any) => state.authSlice?.user);
+  const isSuperAdmin = user?.isSuperAdmin || false;
+
+  const filteredNavItems = NAVIGATION_ITEMS.filter(item => {
+    if (item.superAdminOnly && !isSuperAdmin) return false;
+    return true;
+  });
+
   return (
     <>
       {/* Overlay for mobile */}
@@ -210,7 +266,7 @@ export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
 
           {/* Scrollable Navigation Area */}
           <nav className="flex-1 px-4 space-y-0.5 overflow-y-auto custom-scrollbar">
-            {NAVIGATION_ITEMS.map((item) => (
+            {filteredNavItems.map((item) => (
               <NavItemComponent key={item.href} item={item} onClick={onClose} />
             ))}
           </nav>

@@ -1,8 +1,11 @@
 import axiosClient from "@/services/axiosClient";
 
+/** Cookie name the middleware reads to verify auth */
+export const AUTH_COOKIE = "crm_token";
+
 /**
  * In-memory manager for Access Token.
- * Prevents CSRF by keeping sensitive data out of localStorage.
+ * Also syncs to a cookie so the server-side middleware can read it.
  */
 let accessToken: string | null = null;
 let rotationInterval: NodeJS.Timeout | null = null;
@@ -11,9 +14,16 @@ export const tokenManager = {
   get: () => accessToken,
   set: (token: string) => {
     accessToken = token;
+    // Write to cookie for middleware (client-side only)
+    if (typeof document !== "undefined") {
+      document.cookie = `${AUTH_COOKIE}=${token}; path=/; SameSite=Lax`;
+    }
   },
   clear: () => {
     accessToken = null;
+    if (typeof document !== "undefined") {
+      document.cookie = `${AUTH_COOKIE}=; path=/; max-age=0`;
+    }
   },
   /**
    * Returns token from memory, OR attempts silent refresh via httpOnly cookie.

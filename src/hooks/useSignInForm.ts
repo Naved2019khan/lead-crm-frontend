@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setOpenModal } from "@/redux/slice/auth-slice";
 import { signInNetworkCall } from "@/services/api/auth-api";
+import { tokenManager } from "@/lib/tokenManager";
 interface FormData {
   email: string;
   password: string;
@@ -56,6 +57,7 @@ export const useSignInForm = (formData: FormData) => {
       }
 
       if (result?.accessToken) {
+        tokenManager.set(result.accessToken);
         toast.success("Sign in successful!");
         dispatch(setOpenModal(null));
         router.push("/dashboard");
