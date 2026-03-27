@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import { GlobelLayover } from "@/components/Layover/GlobelLayover";
-import ReduxProvider from "./ReduxProvider";
+import { StoreProvider } from "@/redux/StoreProvider";
 import { Toaster } from "sonner";
 
 const roboto = Roboto({
@@ -24,11 +24,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.variable} antialiased`}>
-        <ReduxProvider>
+        <StoreProvider>
           <GlobelLayover />
           {children}
           <Toaster position="top-right" />
-        </ReduxProvider>
+        </StoreProvider>
       </body>
     </html>
   );

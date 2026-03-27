@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
-import { signOut } from 'next-auth/react';
+// import { signOut } from 'next-auth/react';
+import { logoutNetworkCall } from '@/services/api/auth-api';
+import { useRouter } from 'next/navigation';
 
 interface ProfileDropdownProps {
   userName?: string;
@@ -15,6 +17,7 @@ export default function ProfileDropdown({
 }: ProfileDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter()
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -28,10 +31,11 @@ export default function ProfileDropdown({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    signOut({
-      callbackUrl: "/",
-    })
+  const handleLogout =  async () => {
+    const result = await logoutNetworkCall()
+    if(result?.success){
+      router.replace("/")
+    }
     setIsOpen(false);
   };
 

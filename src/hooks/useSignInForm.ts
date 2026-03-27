@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { useDispatch } from 'react-redux';
-import { setOpenModal } from '@/redux/slice/auth-slice';
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setOpenModal } from "@/redux/slice/auth-slice";
+import { signInNetworkCall } from "@/services/api/auth-api";
 interface FormData {
   email: string;
   password: string;
@@ -24,15 +25,15 @@ export const useSignInForm = (formData: FormData) => {
     const newErrors: FormErrors = {};
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = "Email is invalid";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     setErrors(newErrors);
@@ -44,25 +45,24 @@ export const useSignInForm = (formData: FormData) => {
 
     setLoading(true);
     try {
-      const result = await signIn('credentials', {
+      const result = await signInNetworkCall({
         email: formData.email,
         password: formData.password,
-        redirect: false,
       });
 
       if (result?.error) {
-        setErrors({ email: 'Invalid email or password' });
+        setErrors({ email: "Invalid email or password" });
         return;
       }
 
-      if (result?.ok) {
-        toast.success('Sign in successful!');
+      if (result?.accessToken) {
+        toast.success("Sign in successful!");
         dispatch(setOpenModal(null));
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
     } catch (error) {
-      console.log('Sign in error:', error);
-      toast.error('Sign in failed. Please try again.');
+      console.log("Sign in error:", error);
+      toast.error("Sign in failed. Please try again.");
     } finally {
       setLoading(false);
     }

@@ -3,9 +3,8 @@
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { X, ChevronDown, LogOut, Building2, LayoutDashboard, Sparkles } from "lucide-react";
+import { X, ChevronDown, LogOut, Building2 } from "lucide-react";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
-import { useSession, signOut } from "next-auth/react";
 
 export interface NavItem {
   name: string;
@@ -119,7 +118,7 @@ const NavItemComponent = ({ item, onClick }: NavItemProps) => {
 };
 
 export const UserProfile = () => {
-  const { data: session } = useSession();
+  let session;
 
   const userInitials = session?.user?.name
     ?.split(" ")
@@ -146,7 +145,7 @@ export const UserProfile = () => {
           <p className="text-[9px] font-bold text-gray-400 truncate uppercase tracking-widest">{userRole}</p>
         </div>
         <button
-          onClick={() => signOut()}
+          // onClick={() => signOut()}
           className="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
         >
           <LogOut className="w-4 h-4" />

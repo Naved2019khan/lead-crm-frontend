@@ -1,6 +1,5 @@
 import DashboardHeader from "@/components/headers/DashboardHeader";
 import { Sidebar } from "@/components/sidebar/Sidebar";
-import { SessionProvider } from "next-auth/react";
 import React from "react";
 
 const DashboardLayout = ({
@@ -9,7 +8,6 @@ const DashboardLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <SessionProvider>
 
       <div className="min-h-screen bg-gray-50 flex">
         <Sidebar />
@@ -20,7 +18,6 @@ const DashboardLayout = ({
           </main>
         </div>
       </div>
-    </SessionProvider>
   );
 };
 

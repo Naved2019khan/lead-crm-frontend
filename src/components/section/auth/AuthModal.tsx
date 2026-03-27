@@ -13,7 +13,7 @@ export const AuthModal = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
     email: "naved2019khan@gmail.com",
-    password: "naved2019khan@gmail.com",
+    password: "naved_admin",
     confirmPassword: "",
   });
   const handleFormChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
