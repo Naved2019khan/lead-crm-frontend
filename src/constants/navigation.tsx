@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Layers, Settings, Users2, BookOpen,
   Globe2, ShoppingBag, Mailbox, Sparkles, FlaskConical,
-  Plane, Magnet, Boxes, ListOrdered, ShieldCheck
+  Plane, Magnet, Boxes, ListOrdered, ShieldCheck, Package
 } from "lucide-react";
 
 export interface NavItem {
@@ -96,6 +96,11 @@ export const NAVIGATION_ITEMS: NavItem[] = [
         name: "Ecom Orders",
         icon: <ListOrdered className="w-4 h-4" />,
         href: "/dashboard/ecom/orders",
+      },
+      {
+        name: "Products",
+        icon: <Package className="w-4 h-4" />,
+        href: "/dashboard/ecom/products",
       },
       {
         name: "Ecom Users",

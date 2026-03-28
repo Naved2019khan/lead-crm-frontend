@@ -8,7 +8,7 @@ export const AUTH_COOKIE = "crm_token";
  * Also syncs to a cookie so the server-side middleware can read it.
  */
 let accessToken: string | null = null;
-let rotationInterval: NodeJS.Timeout | null = null;
+
 
 export const tokenManager = {
   get: () => accessToken,
@@ -52,28 +52,4 @@ export const tokenManager = {
     }
   },
 
-  /**
-   * Starts periodic background rotation every 10 minutes.
-   */
-  startRotation: () => {
-    if (rotationInterval) return;
-    
-    // Initial call to ensure we have a fresh token immediately if possible
-    // (though usually initAuth handles this on boot)
-    
-    rotationInterval = setInterval(() => {
-      console.log("[TokenManager] Rotating token...");
-      tokenManager.getAccessToken(true);
-    }, 14 * 60 * 1000); // 10 minutes
-  },
-
-  /**
-   * Stops periodic background rotation.
-   */
-  stopRotation: () => {
-    if (rotationInterval) {
-      clearInterval(rotationInterval);
-      rotationInterval = null;
-    }
-  },
 };

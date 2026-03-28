@@ -47,7 +47,6 @@ export function middleware(req: NextRequest) {
     isSuperAdmin = superAdminFlag === true || superAdminFlag === "true";
   }
 
-  console.log(payload, "PAYYYYYLOAF")
 
   // Check if this path requires super-admin
   const needsSuperAdmin = SUPER_ADMIN_ROUTES.some((route) =>
