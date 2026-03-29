@@ -1,9 +1,15 @@
-import { serverFetch } from "@/utils/serverFetch";
+import axiosClient from "../axiosClient";
 
 const CAPTURE_ENDPOINT = {
-    get_capture_leaa : "/_next/all-capture-lead",
-}
+  get_capture_leaa: "/_next/all-capture-lead",
+};
 
 export const getAllCapture = async () => {
-  return await serverFetch(CAPTURE_ENDPOINT.get_capture_leaa);
+  try {
+    const response = await axiosClient.get(CAPTURE_ENDPOINT.get_capture_leaa);
+    return response.data;
+  }
+  catch (error) {
+    console.log("error", error)
+  }
 };

@@ -1,5 +1,6 @@
-import { auth } from "@/lib/auth";
 import { errorHandler } from "./errorHandler";
+import { cookies } from "next/headers";
+import { AUTH_COOKIE } from "@/lib/tokenManager";
 
 const baseURL = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -7,30 +8,63 @@ interface FetchOptions extends RequestInit {
   data?: any;
 }
 
-export const serverFetch = async (endpoint: string, options: FetchOptions = {}) => {
-  const session = await auth();
-  const token = (session?.user as any)?.token;
-
-  const headers = new Headers(options.headers);
+const getHeaders = (token: string | undefined, originalHeaders?: HeadersInit) => {
+  const headers = new Headers(originalHeaders);
   headers.set("Content-Type", "application/json");
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
+  return headers;
+};
+
+export const serverFetch = async (endpoint: string, options: FetchOptions = {}) => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(AUTH_COOKIE)?.value;
+  console.log("CRM TOKEN1:===>", token)
 
   const url = `${baseURL}${endpoint}`;
 
-  // If there's a body and it's not a string, stringify it
   let body = options.data;
   if (body && typeof body === "object") {
     body = JSON.stringify(body);
   }
 
   try {
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       ...options,
-      headers,
+      headers: getHeaders(token, options.headers),
       body,
     });
+
+    if (response.status === 401) {
+      console.log("[serverFetch] 401 received. Attempting server-side token refresh...");
+      const allCookies = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
+
+      const refreshResponse = await fetch(`${baseURL}/auth/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cookie": allCookies
+        }
+      });
+
+      if (refreshResponse.ok) {
+        const refreshData = await refreshResponse.json();
+        const newToken = refreshData.accessToken;
+
+        if (newToken) {
+          console.log("[serverFetch] Refresh successful. Retrying original request.");
+          response = await fetch(url, {
+            ...options,
+            headers: getHeaders(newToken, options.headers),
+            body,
+          });
+        }
+      } else {
+        console.error("[serverFetch] Refresh failed with status:", refreshResponse.status);
+        console.log("CRM TOKEN2:===>", token)
+      }
+    }
 
     if (!response.ok) {
       // Parse error response if possible
@@ -40,7 +74,7 @@ export const serverFetch = async (endpoint: string, options: FetchOptions = {}) 
       } catch (e) {
         errorData = { message: response.statusText };
       }
-      
+
       throw {
         response: {
           data: errorData,

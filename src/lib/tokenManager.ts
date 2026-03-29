@@ -27,10 +27,27 @@ export const tokenManager = {
   },
   /**
    * Returns token from memory, OR attempts silent refresh via httpOnly cookie.
+   * If the token exists but does not contain a valid user, it forces a refresh.
    * @param force - If true, ignores memory token and hits the refresh endpoint.
    */
   getAccessToken: async (force: boolean = false): Promise<string | null> => {
-    if (accessToken && !force) return accessToken;
+    let hasValidUser = false;
+
+    if (accessToken && !force) {
+      try {
+        // Decode to check if user info actually exists in the token
+        const { jwtDecode } = require('jwt-decode');
+        const decoded: any = jwtDecode(accessToken);
+        if (decoded && decoded.userId) {
+          hasValidUser = true;
+        }
+      } catch (e) {
+        console.error("[TokenManager] Failed to decode token. Forcing refresh.", e);
+      }
+    }
+
+    // Return the cached token only if we aren't forcing a refresh AND it has a valid user
+    if (accessToken && !force && hasValidUser) return accessToken;
 
     try {
       // Use original axiosClient which already has withCredentials: true
@@ -45,6 +62,7 @@ export const tokenManager = {
       );
 
       const newToken = res.data.accessToken;
+      tokenManager.set(newToken);
       accessToken = newToken;
       return newToken;
     } catch (error) {

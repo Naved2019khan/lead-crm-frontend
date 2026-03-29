@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import axios from "axios";
 import { tokenManager } from "@/lib/tokenManager";
@@ -67,6 +67,8 @@ axiosClient.interceptors.response.use(
           isRefreshing = false;
           notifySubscribers(newToken);
           
+          window.dispatchEvent(new CustomEvent("auth:refresh"));
+
           // Retry the original request with the new token
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return axiosClient(originalRequest);

@@ -41,7 +41,17 @@ export const initAuth = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     // Already have token in memory (e.g. dev HMR)
     const existing = tokenManager.get();
-    if (existing) return jwtDecode<AuthUser>(existing);
+    if (existing) {
+      try {
+        const decoded = jwtDecode<AuthUser>(existing);
+        if (decoded && decoded.userId) {
+          return decoded;
+        }
+      } catch (error) {
+        // Fall back to refreshing the token if the existing one is invalid
+        console.warn("[AuthSlice] Existing token is invalid, attempting refresh...");
+      }
+    }
 
     // Try silent refresh from httpOnly cookie
     const token = await tokenManager.getAccessToken();
